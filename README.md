@@ -17,6 +17,14 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Deploy (GitHub Pages)
+
+Live site: [https://neuroautomatalabs.github.io/AURA-Jewellery/](https://neuroautomatalabs.github.io/AURA-Jewellery/)
+
+Pushes to `main` build a static export and deploy via GitHub Actions. In the repo settings, set **Pages → Source** to **GitHub Actions**.
+
+Appointment booking on Pages opens the visitor’s email app (no SMTP server). Local/server deploys can still use the `/api/appointment` route.
+
 ## Appointment emails
 
 Copy `.env.example` → `.env.local`:

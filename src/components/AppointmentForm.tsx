@@ -5,6 +5,39 @@ import { piercings } from "@/data/piercings";
 
 type Status = "idle" | "loading" | "success" | "error";
 
+const STUDIO_EMAIL = "studio-inbox@yourdomain.com";
+
+function asText(value: FormDataEntryValue | undefined) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function openMailto(data: Record<string, FormDataEntryValue>) {
+  const name = asText(data.name);
+  const email = asText(data.email);
+  const phone = asText(data.phone);
+  const date = asText(data.date);
+  const time = asText(data.time);
+  const interest = asText(data.interest);
+  const piercing = asText(data.piercing) || "Not sure yet";
+  const notes = asText(data.notes) || "—";
+
+  const subject = encodeURIComponent(`Appointment request — ${name}`);
+  const body = encodeURIComponent(
+    [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `Preferred date: ${date}`,
+      `Preferred time: ${time}`,
+      `Interest: ${interest}`,
+      `Piercing: ${piercing}`,
+      `Notes: ${notes}`,
+    ].join("\n"),
+  );
+
+  window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;
+}
+
 export function AppointmentForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
@@ -16,29 +49,40 @@ export function AppointmentForm() {
 
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
+    const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
     try {
-      const res = await fetch("/api/appointment", {
+      const res = await fetch(`${base}/api/appointment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const json = (await res.json()) as { message?: string; error?: string };
-      if (!res.ok) {
-        setStatus("error");
-        setMessage(json.error || "Something went wrong. Please try again.");
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        const json = (await res.json()) as { message?: string; error?: string };
+        if (!res.ok) {
+          setStatus("error");
+          setMessage(json.error || "Something went wrong. Please try again.");
+          return;
+        }
+        setStatus("success");
+        setMessage(
+          json.message ||
+            "Appointment request sent. Check your inbox for confirmation.",
+        );
+        form.reset();
         return;
       }
-      setStatus("success");
-      setMessage(
-        json.message ||
-          "Appointment request sent. Check your inbox for confirmation.",
-      );
-      form.reset();
     } catch {
-      setStatus("error");
-      setMessage("Network error. Please try again.");
+      // No API available (e.g. GitHub Pages static host).
     }
+
+    openMailto(data);
+    setStatus("success");
+    setMessage(
+      "Opening your email app with the appointment details. Send the message to complete your request.",
+    );
+    form.reset();
   }
 
   const field =
@@ -170,7 +214,8 @@ export function AppointmentForm() {
       )}
 
       <p className="text-center text-xs leading-relaxed text-ink-muted">
-        You and our studio both receive an email confirmation after you submit.
+        On the live site this opens your email app with a pre-filled request. Local
+        server mode can send dual confirmation emails via SMTP.
       </p>
     </form>
   );
