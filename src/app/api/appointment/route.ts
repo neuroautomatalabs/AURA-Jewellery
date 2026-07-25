@@ -1,0 +1,123 @@
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+type Body = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  date?: string;
+  time?: string;
+  interest?: string;
+  piercing?: string;
+  notes?: string;
+};
+
+function required(value: unknown) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+export async function POST(request: Request) {
+  let body: Body;
+  try {
+    body = (await request.json()) as Body;
+  } catch {
+    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  }
+
+  const { name, email, phone, date, time, interest, piercing, notes } = body;
+
+  if (
+    !required(name) ||
+    !required(email) ||
+    !required(phone) ||
+    !required(date) ||
+    !required(time) ||
+    !required(interest)
+  ) {
+    return NextResponse.json(
+      { error: "Please fill in all required fields." },
+      { status: 400 },
+    );
+  }
+
+  const businessEmail =
+    process.env.BUSINESS_EMAIL || process.env.SMTP_USER || "";
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  const summary = `
+New appointment request — Aura Jewellery
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Date: ${date}
+Time: ${time}
+Interest: ${interest}
+Piercing: ${piercing || "Not specified"}
+Notes: ${notes || "—"}
+`.trim();
+
+  const userHtml = `
+  <div style="font-family: Georgia, serif; color: #0e1420; max-width: 560px;">
+    <h1 style="color:#0a2463; font-weight:500; letter-spacing:0.12em;">AURA JEWELLERY</h1>
+    <p>Hi ${name},</p>
+    <p>Thank you for booking with us. We have received your appointment request and will confirm shortly.</p>
+    <p><strong>Date:</strong> ${date}<br/>
+    <strong>Time:</strong> ${time}<br/>
+    <strong>Interest:</strong> ${interest}<br/>
+    <strong>Placement:</strong> ${piercing || "To discuss"}</p>
+    <p style="color:#5c6578; font-size:14px;">If you need to change anything, reply to this email.</p>
+  </div>
+  `;
+
+  if (!host || !user || !pass || !businessEmail) {
+    console.log("[appointment demo mode]\n", summary);
+    return NextResponse.json({
+      message:
+        "Request received (demo mode). Add SMTP settings in .env.local to send real emails to you and the client.",
+      demo: true,
+    });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+    });
+
+    await transporter.sendMail({
+      from: `"Aura Jewellery Appointments" <${user}>`,
+      to: businessEmail,
+      replyTo: email,
+      subject: `Appointment · ${name} · ${date} ${time}`,
+      text: summary,
+    });
+
+    await transporter.sendMail({
+      from: `"Aura Jewellery" <${user}>`,
+      to: email,
+      subject: "Your Aura Jewellery appointment request",
+      text: `Hi ${name},\n\nThank you for booking with Aura Jewellery. We received your request for ${date} at ${time}.\n\nWe will confirm shortly.\n\n— Aura Jewellery`,
+      html: userHtml,
+    });
+
+    return NextResponse.json({
+      message:
+        "Appointment request sent. A confirmation email is on its way to your inbox.",
+    });
+  } catch (err) {
+    console.error("Appointment email failed", err);
+    return NextResponse.json(
+      {
+        error:
+          "We could not send emails right now. Please call the studio or try again later.",
+      },
+      { status: 500 },
+    );
+  }
+}
