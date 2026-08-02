@@ -25,10 +25,13 @@ export function Footer() {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/shop">Shop gold &amp; diamond</Link>
+              <Link href="/shop">Shop by Ornament</Link>
             </li>
             <li>
-              <Link href="/piercings">Animated ear map</Link>
+              <Link href="/piercings">Shop by Piercing</Link>
+            </li>
+            <li>
+              <Link href="/customize">Customize</Link>
             </li>
             <li>
               <Link href="/guides">Guides</Link>
@@ -42,10 +45,13 @@ export function Footer() {
           </p>
           <ul className="mt-4 space-y-2.5 text-sm text-white/75">
             <li>
+              <Link href="/cart">Cart</Link>
+            </li>
+            <li>
               <Link href="/guides/aftercare">Aftercare</Link>
             </li>
             <li>
-              <Link href="/appointment">Book appointment</Link>
+              <Link href="/appointment">Appointment</Link>
             </li>
           </ul>
         </div>

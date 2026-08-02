@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { guides } from "@/data/guides";
 import { products, formatPrice } from "@/data/products";
 import { ProductGrid } from "@/components/ProductGrid";
 
@@ -71,11 +70,8 @@ export default function HomePage() {
       {/* Single collection + ear map — two clear paths */}
       <section className="bg-surface px-4 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-7xl">
-          <p className="text-center text-[11px] font-bold uppercase tracking-[0.24em] text-gold">
+          <h2 className="text-center font-display text-4xl tracking-wide text-royal sm:text-5xl">
             Explore
-          </p>
-          <h2 className="mt-2 text-center text-2xl font-semibold tracking-wide text-royal sm:text-3xl">
-            Two ways to discover
           </h2>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5">
@@ -112,7 +108,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-royal-deep via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
                 <p className="font-display text-3xl text-white sm:text-4xl">
-                  Animated Ear Map
+                  Shop by piercing
                 </p>
                 <p className="mt-2 text-sm text-white/80">
                   Tap a placement · see matching studs
@@ -129,14 +125,9 @@ export default function HomePage() {
       <section className="bg-white px-4 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gold">
-                Bestsellers
-              </p>
-              <h2 className="font-display mt-1 text-3xl text-royal sm:text-4xl">
-                Designs customers love
-              </h2>
-            </div>
+            <h2 className="font-display text-3xl text-royal sm:text-4xl">
+              Bestsellers
+            </h2>
             <Link href="/shop" className="text-sm font-bold text-royal underline-offset-4 hover:underline">
               View all
             </Link>
@@ -147,19 +138,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-royal px-4 py-10 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 text-center sm:flex-row sm:text-left">
-          <div>
-            <p className="font-display text-2xl text-white sm:text-3xl">
-              Starting {formatPrice(2499)}
-            </p>
-            <p className="mt-1 text-sm text-white/70">
-              Everyday 18K gold studs · clear pricing
-            </p>
+      <section className="bg-royal px-4 py-12 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-center font-display text-3xl text-white sm:text-4xl">
+            Starts from
+          </h2>
+          <p className="mt-2 text-center text-sm text-white/65">
+            Clear pricing · three entry points
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3 sm:gap-5">
+            {[
+              {
+                price: 2499,
+                label: "Everyday 18K",
+                desc: "Daily-wear gold studs",
+              },
+              {
+                price: 4499,
+                label: "Signature",
+                desc: "Elevated everyday pieces",
+              },
+              {
+                price: 6499,
+                label: "Heritage 22K",
+                desc: "Richer traditional gold",
+              },
+            ].map((tier) => (
+              <Link
+                key={tier.price}
+                href="/shop"
+                className="group flex flex-col items-center rounded-2xl border border-white/15 bg-white/5 px-5 py-8 text-center transition hover:border-gold/50 hover:bg-white/10"
+              >
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold-bright">
+                  {tier.label}
+                </p>
+                <p className="font-display mt-3 text-3xl text-white sm:text-4xl">
+                  {formatPrice(tier.price)}
+                </p>
+                <p className="mt-2 text-sm text-white/60">{tier.desc}</p>
+                <span className="mt-5 text-xs font-bold uppercase tracking-wider text-gold-bright transition group-hover:underline">
+                  Browse
+                </span>
+              </Link>
+            ))}
           </div>
-          <Link href="/shop" className="btn-gold">
-            Browse from ₹2,499
-          </Link>
         </div>
       </section>
 
@@ -186,43 +208,6 @@ export default function HomePage() {
             <Link href="/appointment" className="btn-primary">
               Book appointment
             </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white px-4 py-14 sm:px-6 sm:py-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gold">
-                Guides
-              </p>
-              <h2 className="font-display mt-1 text-3xl text-royal">
-                Piercing know-how
-              </h2>
-            </div>
-            <Link href="/guides" className="text-sm font-bold text-royal">
-              All guides
-            </Link>
-          </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {guides.map((guide) => (
-              <Link
-                key={guide.slug}
-                href={`/guides/${guide.slug}`}
-                className="rounded-xl border border-line p-5 transition hover:border-royal/30 hover:shadow-md"
-              >
-                <p className="text-[11px] text-ink-muted">
-                  {guide.readMinutes} min
-                </p>
-                <h3 className="font-display mt-2 text-xl text-ink">
-                  {guide.title}
-                </h3>
-                <p className="mt-2 line-clamp-2 text-sm text-ink-muted">
-                  {guide.excerpt}
-                </p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>

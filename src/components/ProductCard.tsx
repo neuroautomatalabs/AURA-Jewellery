@@ -1,12 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/data/products";
 
 export function ProductCard({ product }: { product: Product }) {
+  const href = `/products/${product.id}`;
+
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-      <div className="relative aspect-square overflow-hidden bg-surface">
+      <Link href={href} className="relative aspect-square overflow-hidden bg-surface">
         <Image
           src={product.image}
           alt={product.name}
@@ -19,20 +23,22 @@ export function ProductCard({ product }: { product: Product }) {
             ? `${product.karat?.toUpperCase()} Gold`
             : "Diamond"}
         </div>
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col p-3.5">
-        <h3 className="font-display line-clamp-2 min-h-[2.75rem] text-[15px] leading-snug text-ink sm:text-base">
-          {product.name}
-        </h3>
+        <Link href={href}>
+          <h3 className="font-display line-clamp-2 min-h-[2.75rem] text-[15px] leading-snug text-ink transition group-hover:text-royal sm:text-base">
+            {product.name}
+          </h3>
+        </Link>
         <p className="mt-2 text-lg font-bold text-royal">
           {formatPrice(product.price, product.currency)}
         </p>
         <p className="mt-1 text-[11px] font-medium uppercase tracking-wider text-ink-muted">
-          {product.style}
+          {product.unit === "pair" ? "Pair" : product.style}
         </p>
-        <Link href="/appointment" className="btn-primary mt-3.5 w-full">
-          Enquire / Book
+        <Link href={href} className="btn-primary mt-3.5 w-full text-center">
+          View details
         </Link>
       </div>
     </article>

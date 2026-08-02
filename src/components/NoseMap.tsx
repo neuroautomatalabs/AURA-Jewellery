@@ -1,43 +1,33 @@
 "use client";
 
-import { earPiercings } from "@/data/piercings";
-import type { EarPiercingId } from "@/lib/types";
+import { nosePiercings } from "@/data/piercings";
+import type { NosePiercingId } from "@/lib/types";
 
 type Props = {
-  selectedId: EarPiercingId | null;
-  onSelect: (id: EarPiercingId) => void;
+  selectedId: NosePiercingId | null;
+  onSelect: (id: NosePiercingId) => void;
 };
 
-/** Stylized animated ear — creative SVG, not a labeled photo */
+/** Stylized animated nose — creative SVG, same interaction pattern as EarMap */
 const HOTSPOTS: {
-  id: EarPiercingId;
+  id: NosePiercingId;
   cx: number;
   cy: number;
-  zone: string;
 }[] = [
-  { id: "aura-helix", cx: 168, cy: 42, zone: "helix" },
-  { id: "helix", cx: 198, cy: 88, zone: "helix" },
-  { id: "low-helix", cx: 205, cy: 168, zone: "rim" },
-  { id: "forward-helix", cx: 95, cy: 95, zone: "helix" },
-  { id: "aura-rook", cx: 145, cy: 72, zone: "inner" },
-  { id: "hidden-rook", cx: 128, cy: 85, zone: "inner" },
-  { id: "rook", cx: 138, cy: 105, zone: "inner" },
-  { id: "contraconch", cx: 170, cy: 125, zone: "bowl" },
-  { id: "conch", cx: 160, cy: 155, zone: "bowl" },
-  { id: "daith", cx: 125, cy: 140, zone: "inner" },
-  { id: "tragus", cx: 100, cy: 158, zone: "front" },
-  { id: "antitragus", cx: 148, cy: 190, zone: "front" },
-  { id: "aura-lobe", cx: 155, cy: 225, zone: "lobe" },
-  { id: "lobe-lower", cx: 158, cy: 258, zone: "lobe" },
+  { id: "bridge", cx: 140, cy: 78 },
+  { id: "high-nostril", cx: 108, cy: 148 },
+  { id: "nostril", cx: 100, cy: 188 },
+  { id: "septum", cx: 140, cy: 205 },
+  { id: "nose-tip", cx: 140, cy: 228 },
+  { id: "nasallang", cx: 180, cy: 178 },
 ];
 
-export function EarMap({ selectedId, onSelect }: Props) {
-  const selected = earPiercings.find((p) => p.id === selectedId);
+export function NoseMap({ selectedId, onSelect }: Props) {
+  const selected = nosePiercings.find((p) => p.id === selectedId);
 
   return (
     <div className="w-full">
       <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-2xl bg-gradient-to-br from-royal-deep via-[#0d2868] to-[#1a3a7a] shadow-2xl shadow-royal/30">
-        {/* soft ambient glow */}
         <div className="pointer-events-none absolute inset-0 opacity-40">
           <div className="ear-glow absolute left-1/2 top-1/3 h-48 w-48 -translate-x-1/2 rounded-full bg-gold/30 blur-3xl" />
         </div>
@@ -46,31 +36,27 @@ export function EarMap({ selectedId, onSelect }: Props) {
           viewBox="0 0 280 320"
           className="relative z-10 h-full w-full"
           role="img"
-          aria-label="Animated ear piercing map"
+          aria-label="Animated nose piercing map"
         >
           <defs>
-            <linearGradient id="earSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="noseSkin" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#f3d4c4" />
               <stop offset="45%" stopColor="#e8b9a4" />
               <stop offset="100%" stopColor="#d49a82" />
             </linearGradient>
-            <linearGradient id="zoneHelix" x1="0%" y1="0%" x2="1" y2="1">
-              <stop offset="0%" stopColor="#7eb6ff" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#3d7dd6" stopOpacity="0.25" />
+            <linearGradient id="zoneBridge" x1="0%" y1="0%" x2="1" y2="1">
+              <stop offset="0%" stopColor="#7eb6ff" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#3d7dd6" stopOpacity="0.2" />
             </linearGradient>
-            <linearGradient id="zoneBowl" x1="0%" y1="0%" x2="1" y2="1">
+            <linearGradient id="zoneNostril" x1="0%" y1="0%" x2="1" y2="1">
               <stop offset="0%" stopColor="#ff9b8a" stopOpacity="0.45" />
               <stop offset="100%" stopColor="#e06b5a" stopOpacity="0.2" />
             </linearGradient>
-            <linearGradient id="zoneLobe" x1="0%" y1="0%" x2="1" y2="1">
-              <stop offset="0%" stopColor="#c4a0ff" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#8b6ad6" stopOpacity="0.25" />
+            <linearGradient id="zoneSeptum" x1="0%" y1="0%" x2="1" y2="1">
+              <stop offset="0%" stopColor="#c4a0ff" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#8b6ad6" stopOpacity="0.2" />
             </linearGradient>
-            <linearGradient id="zoneInner" x1="0%" y1="0%" x2="1" y2="1">
-              <stop offset="0%" stopColor="#7dffc8" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#3db892" stopOpacity="0.2" />
-            </linearGradient>
-            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="noseShadow" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow
                 dx="0"
                 dy="8"
@@ -81,70 +67,80 @@ export function EarMap({ selectedId, onSelect }: Props) {
             </filter>
           </defs>
 
-          {/* stylized outer ear */}
+          {/* stylized nose outline */}
           <path
-            d="M150 28
-               C210 32 235 78 232 130
-               C230 175 218 205 200 230
-               C185 250 175 268 168 290
-               C160 305 145 308 135 295
-               C120 275 118 250 122 228
-               C90 220 72 190 78 155
-               C82 125 95 105 112 88
-               C100 70 105 48 125 36
-               C135 30 142 28 150 28 Z"
-            fill="url(#earSkin)"
-            filter="url(#softShadow)"
+            d="M140 40
+               C165 55 188 95 195 145
+               C200 175 198 200 185 225
+               C172 250 155 262 140 265
+               C125 262 108 250 95 225
+               C82 200 80 175 85 145
+               C92 95 115 55 140 40 Z"
+            fill="url(#noseSkin)"
+            filter="url(#noseShadow)"
             className="ear-breathe"
+            style={{ transformOrigin: "140px 160px" }}
           />
 
-          {/* inner ear hollow */}
-          <path
-            d="M130 95
-               C155 88 185 100 190 130
-               C195 160 180 185 155 195
-               C135 202 115 185 118 160
-               C120 140 122 110 130 95 Z"
-            fill="#d4a08c"
-            opacity="0.55"
-          />
-
-          {/* animated colour zones */}
+          {/* bridge highlight */}
           <path
             className="zone-pulse"
-            d="M148 40 C195 48 218 90 215 130 C212 150 205 165 195 175 L175 120 C168 90 155 55 148 40 Z"
-            fill="url(#zoneHelix)"
+            d="M128 55 C145 52 155 70 152 100 C148 120 132 122 128 100 C125 78 122 58 128 55 Z"
+            fill="url(#zoneBridge)"
           />
+
+          {/* left nostril wing */}
           <path
             className="zone-pulse zone-delay-1"
-            d="M135 115 C165 108 185 130 178 160 C172 185 150 190 135 175 C122 160 122 130 135 115 Z"
-            fill="url(#zoneBowl)"
+            d="M95 155 C115 148 125 170 118 195 C112 215 95 218 90 198 C86 178 88 160 95 155 Z"
+            fill="url(#zoneNostril)"
           />
+
+          {/* right nostril wing */}
           <path
             className="zone-pulse zone-delay-2"
-            d="M128 210 C155 205 175 230 168 265 C162 285 145 288 138 270 C128 245 118 220 128 210 Z"
-            fill="url(#zoneLobe)"
+            d="M185 155 C165 148 155 170 162 195 C168 215 185 218 190 198 C194 178 192 160 185 155 Z"
+            fill="url(#zoneNostril)"
           />
+
+          {/* septum / tip zone */}
           <path
             className="zone-pulse zone-delay-3"
-            d="M118 100 C140 95 150 120 142 145 C135 160 115 155 112 135 C110 118 112 105 118 100 Z"
-            fill="url(#zoneInner)"
+            d="M125 195 C145 190 155 205 148 230 C142 248 130 248 125 230 C120 212 118 200 125 195 Z"
+            fill="url(#zoneSeptum)"
           />
 
-          {/* antihelix fold line */}
+          {/* nostril openings */}
+          <ellipse
+            cx="112"
+            cy="210"
+            rx="14"
+            ry="10"
+            fill="#c48872"
+            opacity="0.45"
+          />
+          <ellipse
+            cx="168"
+            cy="210"
+            rx="14"
+            ry="10"
+            fill="#c48872"
+            opacity="0.45"
+          />
+
+          {/* center ridge line */}
           <path
-            d="M140 95 C155 110 160 140 150 165"
+            d="M140 55 C142 100 142 150 140 200"
             fill="none"
             stroke="#c48872"
-            strokeWidth="3"
+            strokeWidth="2.5"
             strokeLinecap="round"
-            opacity="0.5"
+            opacity="0.4"
           />
 
-          {/* hotspots */}
           {HOTSPOTS.map((spot) => {
             const active = selectedId === spot.id;
-            const meta = earPiercings.find((p) => p.id === spot.id);
+            const meta = nosePiercings.find((p) => p.id === spot.id);
             return (
               <g
                 key={spot.id}
@@ -186,12 +182,12 @@ export function EarMap({ selectedId, onSelect }: Props) {
         </svg>
 
         <p className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-white/60">
-          Tap a point on the ear
+          Tap a point on the nose
         </p>
       </div>
 
       <div className="mt-4 flex max-h-40 flex-wrap justify-center gap-1.5 overflow-y-auto sm:max-h-none">
-        {earPiercings.map((spot) => {
+        {nosePiercings.map((spot) => {
           const active = selectedId === spot.id;
           return (
             <button
@@ -227,7 +223,7 @@ export function EarMap({ selectedId, onSelect }: Props) {
         </div>
       ) : (
         <p className="mt-3 text-center text-sm text-ink-muted">
-          Choose a glowing point — matching studs appear below
+          Choose a glowing point — matching pieces appear below
         </p>
       )}
     </div>
