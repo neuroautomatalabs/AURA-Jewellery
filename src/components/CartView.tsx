@@ -143,11 +143,9 @@ export function CartView() {
 
   if (count === 0) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gold">
-          Cart
-        </p>
-        <h1 className="font-display mt-2 text-4xl text-royal">
+      <div className="mx-auto max-w-2xl px-4 py-20 text-center sm:px-6">
+        <p className="eyebrow text-gold">Cart</p>
+        <h1 className="font-display mt-3 text-4xl text-royal">
           Your cart is empty
         </h1>
         <p className="mt-3 text-sm text-ink-muted">
@@ -166,32 +164,33 @@ export function CartView() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gold">
-            Cart
-          </p>
-          <h1 className="font-display mt-2 text-3xl text-royal sm:text-4xl">
-            {count} item{count === 1 ? "" : "s"}
-          </h1>
+    <div className="bg-surface">
+      <div className="border-b border-line bg-white">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-end justify-between gap-3 px-4 py-10 sm:px-6 sm:py-12">
+          <div>
+            <p className="eyebrow text-gold">Cart</p>
+            <h1 className="font-display mt-2 text-3xl text-royal sm:text-4xl">
+              {count} item{count === 1 ? "" : "s"}
+            </h1>
+          </div>
+          <button
+            type="button"
+            onClick={clear}
+            className="text-sm font-semibold text-ink-muted underline-offset-4 transition hover:text-royal hover:underline"
+          >
+            Clear cart
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={clear}
-          className="text-sm font-semibold text-ink-muted underline-offset-4 hover:text-royal hover:underline"
-        >
-          Clear cart
-        </button>
       </div>
 
-      <ul className="mt-8 space-y-4">
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+      <ul className="space-y-4">
         {lines.map(({ item, product }) => (
           <li
             key={`${item.productId}-${item.size ?? "default"}`}
-            className="flex gap-4 rounded-xl border border-line bg-white p-3 sm:p-4"
+            className="flex gap-4 rounded-2xl border border-line bg-white p-3.5 shadow-[var(--shadow-soft)] sm:p-4"
           >
-            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-surface sm:h-28 sm:w-28">
+            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-surface sm:h-28 sm:w-28">
               <Link href={`/products/${product.id}`}>
                 <Image
                   src={product.image}
@@ -205,7 +204,7 @@ export function CartView() {
             <div className="flex min-w-0 flex-1 flex-col">
               <Link
                 href={`/products/${product.id}`}
-                className="font-display text-lg leading-snug text-royal hover:underline"
+                className="font-display text-lg leading-snug text-royal transition hover:text-royal-mid"
               >
                 {product.name}
               </Link>
@@ -218,10 +217,10 @@ export function CartView() {
                 {formatPrice(product.price, product.currency)}
               </p>
               <div className="mt-auto flex flex-wrap items-center gap-3 pt-3">
-                <div className="inline-flex items-center rounded-full border border-line">
+                <div className="inline-flex items-center rounded-full border border-line bg-surface">
                   <button
                     type="button"
-                    className="px-3 py-1.5 text-sm font-bold"
+                    className="px-3 py-1.5 text-sm font-bold transition hover:text-royal"
                     aria-label="Decrease quantity"
                     onClick={() =>
                       updateQty(item.productId, item.size, item.qty - 1)
@@ -234,7 +233,7 @@ export function CartView() {
                   </span>
                   <button
                     type="button"
-                    className="px-3 py-1.5 text-sm font-bold"
+                    className="px-3 py-1.5 text-sm font-bold transition hover:text-royal"
                     aria-label="Increase quantity"
                     onClick={() =>
                       updateQty(item.productId, item.size, item.qty + 1)
@@ -246,7 +245,7 @@ export function CartView() {
                 <button
                   type="button"
                   onClick={() => removeItem(item.productId, item.size)}
-                  className="text-xs font-semibold text-ink-muted hover:text-royal"
+                  className="text-xs font-semibold text-ink-muted transition hover:text-royal"
                 >
                   Remove
                 </button>
@@ -256,7 +255,7 @@ export function CartView() {
         ))}
       </ul>
 
-      <div className="mt-8 rounded-2xl border border-line bg-white p-5 sm:p-6">
+      <div className="mt-8 rounded-2xl border border-line bg-white p-5 shadow-[var(--shadow-soft)] sm:p-7">
         <div className="flex items-center justify-between">
           <span className="text-sm text-ink-muted">Subtotal</span>
           <span className="font-display text-2xl text-royal">
@@ -265,53 +264,45 @@ export function CartView() {
         </div>
 
         <div className="mt-6 space-y-3 border-t border-line pt-6">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
-            Checkout details
-          </p>
+          <p className="field-label mb-0">Checkout details</p>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block sm:col-span-2">
-              <span className="mb-1.5 block text-xs font-semibold text-ink">
-                Full name
-              </span>
+              <span className="field-label">Full name</span>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="name"
-                className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm outline-none ring-royal/30 focus:ring-2"
+                className="field-input"
                 placeholder="Your name"
               />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-ink">
-                Email
-              </span>
+              <span className="field-label">Email</span>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm outline-none ring-royal/30 focus:ring-2"
+                className="field-input"
                 placeholder="you@email.com"
               />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-ink">
-                Phone
-              </span>
+              <span className="field-label">Phone</span>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 autoComplete="tel"
-                className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm outline-none ring-royal/30 focus:ring-2"
+                className="field-input"
                 placeholder="+91 …"
               />
             </label>
           </div>
         </div>
 
-        <div className="mt-5 rounded-xl border border-line bg-surface px-4 py-3">
+        <div className="mt-5 rounded-xl border border-line bg-surface px-4 py-3.5">
           <p className="text-sm font-semibold text-royal">Return policy</p>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
             {RETURN_POLICY.summary}
@@ -329,7 +320,7 @@ export function CartView() {
         {error && (
           <p
             role="alert"
-            className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-800"
+            className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-800"
           >
             {error}
           </p>
@@ -339,7 +330,7 @@ export function CartView() {
           type="button"
           onClick={startCheckout}
           disabled={paying}
-          className="btn-primary mt-5 w-full disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn-primary mt-5 w-full"
         >
           {paying ? "Opening payment…" : `Pay ${formatPrice(subtotal)}`}
         </button>
@@ -348,10 +339,11 @@ export function CartView() {
         </p>
         <Link
           href="/shop"
-          className="mt-3 block text-center text-sm font-semibold text-royal underline-offset-4 hover:underline"
+          className="mt-3 block text-center text-sm font-semibold text-royal underline-offset-4 transition hover:underline"
         >
           Continue shopping
         </Link>
+      </div>
       </div>
     </div>
   );

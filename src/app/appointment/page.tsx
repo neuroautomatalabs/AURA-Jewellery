@@ -9,22 +9,28 @@ export const metadata: Metadata = {
 
 export default function AppointmentPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <div className="mx-auto max-w-xl text-center">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-gold">
-          Appointments
-        </p>
-        <h1 className="font-display mt-2 text-4xl text-royal sm:text-5xl">
-          Book with Aura Jewellery
-        </h1>
-        <p className="mt-3 text-ink-muted leading-relaxed">
-          Tell us when you would like to visit. We send a confirmation to your
-          email and to our studio inbox.
-        </p>
+    <div className="bg-surface">
+      <div className="relative overflow-hidden border-b border-line bg-gradient-to-br from-royal-deep via-royal to-royal-mid text-white">
+        <div
+          className="pointer-events-none absolute -right-16 top-0 h-56 w-56 rounded-full bg-gold/20 blur-3xl"
+          aria-hidden
+        />
+        <div className="relative mx-auto max-w-xl px-4 py-12 text-center sm:px-6 sm:py-16">
+          <p className="eyebrow text-gold-bright">Appointments</p>
+          <h1 className="font-display mt-3 text-4xl tracking-wide sm:text-5xl">
+            Book with Aura
+          </h1>
+          <p className="mt-4 text-sm leading-relaxed text-white/75 sm:text-base">
+            Tell us when you would like to visit. We send a confirmation to your
+            email and to our studio inbox.
+          </p>
+        </div>
       </div>
 
-      <div className="mt-10 rounded-sm border border-line bg-white p-4 sm:p-8">
-        <AppointmentForm />
+      <div className="mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-14">
+        <div className="surface-card p-5 sm:p-8">
+          <AppointmentForm />
+        </div>
       </div>
     </div>
   );

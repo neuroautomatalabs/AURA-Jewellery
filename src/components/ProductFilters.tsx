@@ -25,8 +25,8 @@ export function ProductFilters({
   resultCount,
 }: Props) {
   return (
-    <div className="sticky top-[6.75rem] z-30 border-b border-line bg-white/95 shadow-sm backdrop-blur-md sm:top-[6.5rem]">
-      <div className="mx-auto max-w-7xl space-y-3 px-4 py-3 sm:px-6">
+    <div className="sticky top-[6.75rem] z-30 border-b border-line bg-white/90 shadow-[0_4px_20px_rgb(11_31_92/0.06)] backdrop-blur-lg sm:top-[6.5rem]">
+      <div className="mx-auto max-w-7xl space-y-3 px-4 py-3.5 sm:px-6">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
             Metal
@@ -52,7 +52,7 @@ export function ProductFilters({
             </button>
           ))}
           {typeof resultCount === "number" && (
-            <span className="ml-auto text-xs text-ink-muted">
+            <span className="ml-auto rounded-full bg-royal-soft px-3 py-1 text-xs font-semibold text-royal">
               {resultCount} designs
             </span>
           )}
@@ -87,7 +87,7 @@ export function ProductFilters({
         )}
 
         {piercingLabel && (
-          <div className="flex flex-wrap items-center gap-2 rounded-lg bg-royal-soft px-3 py-2.5">
+          <div className="flex flex-wrap items-center gap-2 rounded-xl bg-royal-soft px-3.5 py-2.5">
             <span className="text-sm text-royal">
               Showing for <strong>{piercingLabel}</strong>
             </span>
@@ -95,7 +95,7 @@ export function ProductFilters({
               <button
                 type="button"
                 onClick={onClearPiercing}
-                className="ml-auto min-h-8 rounded-full bg-white px-3 text-xs font-semibold text-royal"
+                className="ml-auto min-h-8 rounded-full bg-white px-3 text-xs font-semibold text-royal shadow-sm transition hover:bg-royal hover:text-white"
               >
                 Clear
               </button>
