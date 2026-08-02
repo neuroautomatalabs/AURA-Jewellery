@@ -1,12 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export function CheckoutSuccess({
-  paymentId,
-  orderId,
-}: {
-  paymentId: string;
-  orderId: string;
-}) {
+export function CheckoutSuccess() {
+  const [paymentId, setPaymentId] = useState("");
+  const [orderId, setOrderId] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setPaymentId(params.get("payment_id") ?? "");
+    setOrderId(params.get("order_id") ?? "");
+  }, []);
+
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
       <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gold">
