@@ -2,19 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { useCart } from "@/components/CartProvider";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/piercings", label: "Ear Map" },
+  { href: "/shop", label: "Shop by Ornament" },
+  { href: "/piercings", label: "Shop by Piercing" },
+  { href: "/customize", label: "Customize" },
   { href: "/guides", label: "Guides" },
-  { href: "/appointment", label: "Book" },
+  { href: "/appointment", label: "Appointment" },
 ];
 
-export function Header() {
+export function Header({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
 
   useEffect(() => {
     setOpen(false);
@@ -29,9 +32,11 @@ export function Header() {
 
   return (
     <div className="sticky top-0 z-50">
-      <div className="bg-royal-deep px-3 py-2 text-center text-[11px] font-medium tracking-wide text-white sm:text-xs">
-        Hallmarked gold &amp; certified diamonds · Free styling consultation
-      </div>
+      {children ?? (
+        <div className="bg-royal-deep px-3 py-2 text-center text-[11px] font-medium tracking-wide text-white sm:text-xs">
+          Hallmarked gold &amp; certified diamonds · Free styling consultation
+        </div>
+      )}
 
       <header className="bg-royal text-white shadow-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
@@ -57,7 +62,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-md px-3.5 py-2 text-[13px] font-semibold tracking-wide transition ${
+                  className={`rounded-md px-2.5 py-2 text-[12px] font-semibold tracking-wide transition lg:px-3.5 lg:text-[13px] ${
                     active
                       ? "bg-white text-royal"
                       : "text-white/90 hover:bg-white/15"
@@ -70,6 +75,42 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <Link
+              href="/cart"
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/30 transition hover:bg-white/15"
+              aria-label={`Cart${count ? `, ${count} items` : ""}`}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5 fill-none stroke-current stroke-[1.75]"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.5 5h1.6l1.4 10.2a1.5 1.5 0 001.5 1.3h8.7a1.5 1.5 0 001.5-1.2L19.5 8H7"
+                />
+                <circle
+                  cx="9.5"
+                  cy="19.5"
+                  r="1.2"
+                  fill="currentColor"
+                  stroke="none"
+                />
+                <circle
+                  cx="16.5"
+                  cy="19.5"
+                  r="1.2"
+                  fill="currentColor"
+                  stroke="none"
+                />
+              </svg>
+              {count > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold text-royal-deep">
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
+            </Link>
             <Link href="/shop" className="btn-gold hidden sm:inline-flex">
               Shop now
             </Link>
@@ -120,6 +161,14 @@ export function Header() {
                   </li>
                 );
               })}
+              <li>
+                <Link
+                  href="/cart"
+                  className="block rounded-md px-3 py-3.5 text-base font-medium"
+                >
+                  Cart{count > 0 ? ` (${count})` : ""}
+                </Link>
+              </li>
             </ul>
           </nav>
         )}

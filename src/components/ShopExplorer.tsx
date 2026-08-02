@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { EarMap } from "@/components/EarMap";
+import { NoseMap } from "@/components/NoseMap";
 import {
   ProductFilters,
   type KaratFilter,
@@ -10,7 +11,12 @@ import {
 import { ProductGrid } from "@/components/ProductGrid";
 import { filterProducts, products } from "@/data/products";
 import { getPiercing } from "@/data/piercings";
-import type { PiercingId } from "@/lib/types";
+import type {
+  EarPiercingId,
+  NosePiercingId,
+  PiercingId,
+  PiercingRegion,
+} from "@/lib/types";
 
 type Props = {
   initialMetal?: MetalFilter;
@@ -31,6 +37,7 @@ export function ShopExplorer({
 }: Props) {
   const [metal, setMetal] = useState<MetalFilter>(initialMetal);
   const [karat, setKarat] = useState<KaratFilter>(initialKarat);
+  const [region, setRegion] = useState<PiercingRegion>("ear");
   const [piercing, setPiercing] = useState<PiercingId | null>(
     mode === "ear-map" ? initialPiercing : null,
   );
@@ -46,6 +53,11 @@ export function ShopExplorer({
       }),
     [metal, karat, piercing, mode],
   );
+
+  function switchRegion(next: PiercingRegion) {
+    setRegion(next);
+    setPiercing(null);
+  }
 
   return (
     <div className="min-h-[60vh] bg-surface">
@@ -78,6 +90,30 @@ export function ShopExplorer({
           >
             {subtitle}
           </p>
+
+          {mode === "ear-map" && (
+            <div className="mt-6 inline-flex rounded-full bg-white/10 p-1 ring-1 ring-white/20">
+              {(
+                [
+                  { id: "ear", label: "Ear map" },
+                  { id: "nose", label: "Nose map" },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => switchRegion(tab.id)}
+                  className={`min-h-10 rounded-full px-5 text-sm font-semibold transition ${
+                    region === tab.id
+                      ? "bg-gold text-royal-deep shadow-md"
+                      : "text-white/80 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -100,18 +136,27 @@ export function ShopExplorer({
         {mode === "ear-map" ? (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,380px)_1fr] xl:grid-cols-[minmax(0,420px)_1fr]">
             <div className="lg:sticky lg:top-44 lg:self-start">
-              <EarMap
-                selectedId={piercing}
-                onSelect={(id) =>
-                  setPiercing((prev) => (prev === id ? null : id))
-                }
-              />
+              {region === "ear" ? (
+                <EarMap
+                  selectedId={piercing as EarPiercingId | null}
+                  onSelect={(id) =>
+                    setPiercing((prev) => (prev === id ? null : id))
+                  }
+                />
+              ) : (
+                <NoseMap
+                  selectedId={piercing as NosePiercingId | null}
+                  onSelect={(id) =>
+                    setPiercing((prev) => (prev === id ? null : id))
+                  }
+                />
+              )}
             </div>
             <div>
               <p className="mb-4 text-sm font-semibold text-ink">
                 {piercingMeta
-                  ? `Studs for ${piercingMeta.name}`
-                  : "Select a piercing on the map — or browse all below"}
+                  ? `Pieces for ${piercingMeta.name}`
+                  : `Select a ${region} piercing on the map — or browse all below`}
               </p>
               <ProductGrid products={list} />
             </div>

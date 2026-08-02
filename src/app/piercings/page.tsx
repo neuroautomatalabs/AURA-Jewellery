@@ -2,17 +2,17 @@ import { ShopExplorer } from "@/components/ShopExplorer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Ear Map",
+  title: "Ear & Nose Maps",
   description:
-    "Animated interactive ear map. Tap a piercing placement to see matching gold and diamond studs.",
+    "Animated interactive ear and nose maps. Tap a piercing placement to see matching gold and diamond pieces.",
 };
 
 export default function PiercingsPage() {
   return (
     <ShopExplorer
       mode="ear-map"
-      title="Animated Ear Map"
-      subtitle="A creative Aura ear — tap glowing points to reveal studs for that exact placement. This page is different from Shop."
+      title="Piercing Maps"
+      subtitle="Tap glowing points on the ear or nose map to reveal pieces for that exact placement — different from browsing the full Shop."
     />
   );
 }

@@ -50,12 +50,17 @@ export default async function GuideDetailPage({ params }: Props) {
         <p className="font-display text-2xl tracking-wide">
           Questions about your ear?
         </p>
-        <Link
-          href="/appointment"
-          className="mt-4 inline-flex min-h-11 items-center rounded-sm bg-white px-5 text-sm font-medium text-royal"
+        <p className="mx-auto mt-2 max-w-sm text-sm text-white/70">
+          Our specialists are on WhatsApp — metal, size, and placement help.
+        </p>
+        <a
+          href="https://wa.me/919876543210?text=Hi%20Aura%20Jewellery%2C%20I%20have%20a%20question%20about%20my%20ear%20piercing."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-5 text-sm font-bold text-white"
         >
-          Book with Aura Jewellery
-        </Link>
+          Chat on WhatsApp
+        </a>
       </div>
     </article>
   );
