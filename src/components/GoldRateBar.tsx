@@ -33,6 +33,24 @@ function FallbackBar({ message }: { message: string }) {
   );
 }
 
+async function loadRates(base: string): Promise<CjaRates> {
+  // Prefer live API when a Node server is available (local / Vercel).
+  try {
+    const live = await fetch(`${base}/api/gold-rate`, { cache: "no-store" });
+    if (live.ok) {
+      return (await live.json()) as CjaRates;
+    }
+  } catch {
+    // Fall through to static JSON (GitHub Pages).
+  }
+
+  const baked = await fetch(`${base}/gold-rates.json`, { cache: "no-store" });
+  if (!baked.ok) {
+    throw new Error(`HTTP ${baked.status}`);
+  }
+  return (await baked.json()) as CjaRates;
+}
+
 export function GoldRateBar() {
   const [rates, setRates] = useState<CjaRates | null>(null);
   const [failed, setFailed] = useState(false);
@@ -43,11 +61,7 @@ export function GoldRateBar() {
 
     async function load() {
       try {
-        const res = await fetch(`${base}/api/gold-rate`, {
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as CjaRates;
+        const data = await loadRates(base);
         if (!cancelled) {
           setRates(data);
           setFailed(false);
@@ -70,9 +84,7 @@ export function GoldRateBar() {
   }, []);
 
   if (!rates && !failed) {
-    return (
-      <FallbackBar message="Loading today&apos;s CJA gold rates…" />
-    );
+    return <FallbackBar message="Loading today's CJA gold rates…" />;
   }
 
   if (!rates || rates.gold22 == null) {
@@ -87,12 +99,8 @@ export function GoldRateBar() {
         <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-bright/90 sm:inline">
           Today&apos;s CJA rate
         </span>
-        {rates.gold22 != null && (
-          <RateChip label="22K" amount={rates.gold22} />
-        )}
-        {rates.gold18 != null && (
-          <RateChip label="18K" amount={rates.gold18} />
-        )}
+        {rates.gold22 != null && <RateChip label="22K" amount={rates.gold22} />}
+        {rates.gold18 != null && <RateChip label="18K" amount={rates.gold18} />}
         {rates.silver != null && rates.silver > 0 && (
           <span className="hidden sm:inline">
             <RateChip

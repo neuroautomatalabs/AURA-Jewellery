@@ -23,6 +23,8 @@ Live site: [https://neuroautomatalabs.github.io/AURA-Jewellery/](https://neuroau
 
 Pushes to `main` build a static export and deploy via GitHub Actions. In the repo settings, set **Pages → Source** to **GitHub Actions**.
 
+**Gold rates on Pages:** CJA rates are fetched at build time into `public/gold-rates.json` (also refreshed by a daily scheduled deploy). Local `npm run dev` still uses the live `/api/gold-rate` scrape.
+
 Appointment booking on Pages opens the visitor’s email app (no SMTP server). Local/server deploys can still use the `/api/appointment` route.
 
 ## Appointment emails

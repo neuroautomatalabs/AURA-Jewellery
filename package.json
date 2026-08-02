@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "fetch-gold-rates": "node scripts/fetch-gold-rates.mjs",
     "start": "next start",
     "lint": "eslint"
   },
