@@ -64,27 +64,33 @@ export function ShopExplorer({
       <div
         className={
           mode === "ear-map"
-            ? "bg-gradient-to-b from-royal-deep to-royal text-white"
+            ? "relative overflow-hidden bg-gradient-to-b from-royal-deep to-royal text-white"
             : "border-b border-line bg-white"
         }
       >
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
+        {mode === "ear-map" && (
+          <div
+            className="pointer-events-none absolute -right-20 top-0 h-56 w-56 rounded-full bg-gold/15 blur-3xl"
+            aria-hidden
+          />
+        )}
+        <div className="relative mx-auto max-w-7xl px-4 py-11 sm:px-6 sm:py-14">
           <p
-            className={`text-[11px] font-bold uppercase tracking-[0.24em] ${
+            className={`eyebrow ${
               mode === "ear-map" ? "text-gold-bright" : "text-gold"
             }`}
           >
             {mode === "ear-map" ? "Interactive experience" : "Collection"}
           </p>
           <h1
-            className={`font-display mt-2 text-3xl sm:text-4xl md:text-5xl ${
+            className={`font-display mt-3 text-3xl tracking-wide sm:text-4xl md:text-5xl ${
               mode === "ear-map" ? "text-white" : "text-royal"
             }`}
           >
             {title}
           </h1>
           <p
-            className={`mt-3 max-w-2xl text-sm sm:text-base ${
+            className={`mt-3 max-w-2xl text-sm leading-relaxed sm:text-base ${
               mode === "ear-map" ? "text-white/75" : "text-ink-muted"
             }`}
           >
@@ -92,7 +98,7 @@ export function ShopExplorer({
           </p>
 
           {mode === "ear-map" && (
-            <div className="mt-6 inline-flex rounded-full bg-white/10 p-1 ring-1 ring-white/20">
+            <div className="mt-7 inline-flex rounded-full bg-white/10 p-1 ring-1 ring-white/20 backdrop-blur-sm">
               {(
                 [
                   { id: "ear", label: "Ear map" },
@@ -106,7 +112,7 @@ export function ShopExplorer({
                   className={`min-h-10 rounded-full px-5 text-sm font-semibold transition ${
                     region === tab.id
                       ? "bg-gold text-royal-deep shadow-md"
-                      : "text-white/80 hover:text-white"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   {tab.label}
@@ -153,11 +159,18 @@ export function ShopExplorer({
               )}
             </div>
             <div>
-              <p className="mb-4 text-sm font-semibold text-ink">
-                {piercingMeta
-                  ? `Pieces for ${piercingMeta.name}`
-                  : `Select a ${region} piercing on the map — or browse all below`}
-              </p>
+              <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
+                <p className="text-sm font-semibold text-ink">
+                  {piercingMeta
+                    ? `Pieces for ${piercingMeta.name}`
+                    : `Select a ${region} piercing on the map — or browse all below`}
+                </p>
+                {piercingMeta && (
+                  <p className="text-xs text-ink-muted">
+                    {list.length} matching design{list.length === 1 ? "" : "s"}
+                  </p>
+                )}
+              </div>
               <ProductGrid products={list} />
             </div>
           </div>

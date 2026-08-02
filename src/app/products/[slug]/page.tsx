@@ -39,8 +39,9 @@ export default async function ProductPage({ params }: Props) {
 
       {related.length > 0 && (
         <section className="border-t border-line bg-surface">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14">
-            <h2 className="font-display text-2xl text-royal sm:text-3xl">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+            <p className="eyebrow text-gold">Continue browsing</p>
+            <h2 className="font-display mt-2 text-2xl text-royal sm:text-3xl">
               You may also like
             </h2>
             <p className="mt-2 text-sm text-ink-muted">
@@ -51,19 +52,19 @@ export default async function ProductPage({ params }: Props) {
                 <Link
                   key={item.id}
                   href={`/products/${item.id}`}
-                  className="group overflow-hidden rounded-xl border border-line bg-white transition hover:-translate-y-0.5 hover:shadow-lg"
+                  className="group overflow-hidden rounded-xl border border-line bg-white shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-1 hover:border-royal/15 hover:shadow-[var(--shadow-lift)]"
                 >
-                  <div className="relative aspect-square overflow-hidden bg-surface">
+                  <div className="relative aspect-square overflow-hidden bg-white">
                     <Image
                       src={item.image}
                       alt={item.name}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-cover transition duration-700 group-hover:scale-105"
                     />
                   </div>
-                  <div className="p-3.5">
-                    <h3 className="font-display line-clamp-2 text-[15px] leading-snug text-ink">
+                  <div className="p-3.5 sm:p-4">
+                    <h3 className="font-display line-clamp-2 text-[15px] leading-snug text-ink transition group-hover:text-royal">
                       {item.name}
                     </h3>
                     <p className="mt-2 text-base font-bold text-royal">

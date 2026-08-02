@@ -28,8 +28,8 @@ function SpecTable({
 }) {
   if (!rows.length) return null;
   return (
-    <div className="overflow-hidden rounded-xl border border-line">
-      <div className="bg-royal px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.16em] text-white">
+    <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-soft)]">
+      <div className="bg-royal px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white">
         {title}
       </div>
       <dl>
@@ -98,46 +98,49 @@ export function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-      <nav className="mb-6 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.14em] text-ink-muted">
-        <Link href="/" className="hover:text-royal">
+      <nav className="mb-7 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.14em] text-ink-muted">
+        <Link href="/" className="transition hover:text-royal">
           Home
         </Link>
         <span aria-hidden>/</span>
-        <Link href="/shop" className="hover:text-royal">
+        <Link href="/shop" className="transition hover:text-royal">
           Shop
         </Link>
         <span aria-hidden>/</span>
-        <span className="line-clamp-1 text-royal">{product.name}</span>
+        <span className="line-clamp-1 font-semibold text-royal">
+          {product.name}
+        </span>
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-        {/* Gallery — Pragat-style main + thumbs */}
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
         <div>
-          <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
-            <Image
-              src={images[active]}
-              alt={`${product.name} — image ${active + 1}`}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-royal-deep/55 to-transparent px-4 py-3">
+          <div className="gallery-3d relative aspect-square overflow-hidden rounded-2xl bg-surface shadow-[var(--shadow-soft)]">
+            <div className="metal-shine absolute inset-0">
+              <Image
+                src={images[active]}
+                alt={`${product.name} — image ${active + 1}`}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-royal-deep/60 to-transparent px-4 py-3.5">
               <button
                 type="button"
                 onClick={prevImage}
-                className="rounded-md bg-white/90 px-3 py-1.5 text-sm font-semibold text-royal shadow-sm"
+                className="rounded-md bg-white/95 px-3 py-1.5 text-sm font-semibold text-royal shadow-sm transition hover:bg-white"
                 aria-label="Previous image"
               >
                 ‹
               </button>
-              <span className="rounded-md bg-white/90 px-3 py-1 text-xs font-semibold text-royal">
+              <span className="rounded-md bg-white/95 px-3 py-1 text-xs font-semibold text-royal">
                 {active + 1} / {images.length}
               </span>
               <button
                 type="button"
                 onClick={nextImage}
-                className="rounded-md bg-white/90 px-3 py-1.5 text-sm font-semibold text-royal shadow-sm"
+                className="rounded-md bg-white/95 px-3 py-1.5 text-sm font-semibold text-royal shadow-sm transition hover:bg-white"
                 aria-label="Next image"
               >
                 ›
@@ -153,8 +156,8 @@ export function ProductDetail({ product }: { product: Product }) {
                 onClick={() => setActive(i)}
                 className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
                   i === active
-                    ? "border-royal"
-                    : "border-transparent opacity-75 hover:opacity-100"
+                    ? "border-royal shadow-sm"
+                    : "border-transparent opacity-70 hover:opacity-100"
                 }`}
                 aria-label={`View image ${i + 1}`}
                 aria-current={i === active}
@@ -171,12 +174,9 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
         </div>
 
-        {/* Buy box */}
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">
-            {metalBadge}
-          </p>
-          <h1 className="font-display mt-2 text-3xl leading-tight text-royal sm:text-4xl">
+          <p className="eyebrow text-gold">{metalBadge}</p>
+          <h1 className="font-display mt-3 text-3xl leading-tight text-royal sm:text-4xl">
             {product.name}
           </h1>
 
@@ -276,10 +276,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 <Link href="/cart" className="btn-primary flex-1 text-center">
                   View cart
                 </Link>
-                <Link
-                  href="/shop"
-                  className="flex flex-1 items-center justify-center rounded-lg border border-line px-4 text-sm font-semibold text-ink"
-                >
+                <Link href="/shop" className="btn-outline flex-1 text-center">
                   Keep shopping
                 </Link>
               </div>
@@ -295,7 +292,7 @@ export function ProductDetail({ product }: { product: Product }) {
             </button>
           )}
 
-          <div className="mt-5 rounded-xl border border-line bg-surface px-4 py-3">
+          <div className="mt-5 rounded-xl border border-line bg-surface px-4 py-3.5">
             <button
               type="button"
               onClick={() => setShowPolicy((v) => !v)}
@@ -304,7 +301,7 @@ export function ProductDetail({ product }: { product: Product }) {
               <span className="text-sm font-semibold text-royal">
                 Return policy
               </span>
-              <span className="text-xs text-ink-muted">
+              <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 {showPolicy ? "Hide" : "Details"}
               </span>
             </button>
@@ -326,9 +323,12 @@ export function ProductDetail({ product }: { product: Product }) {
       </div>
 
       {/* Product description tables */}
-      <section className="mt-14 max-w-3xl">
-        <h2 className="font-display text-2xl text-royal">Product description</h2>
-        <p className="mt-3 text-base leading-relaxed text-ink-muted">
+      <section className="mt-16 max-w-3xl">
+        <p className="eyebrow text-gold">Details</p>
+        <h2 className="font-display mt-2 text-2xl text-royal sm:text-3xl">
+          Product description
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-ink-muted">
           {product.description}
         </p>
 

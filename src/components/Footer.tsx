@@ -3,79 +3,120 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="bg-royal-deep text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
-        <div>
-          <Link href="/">
-            <p className="font-display text-3xl tracking-wide">Aura</p>
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4 md:gap-8">
+        <div className="md:pr-4">
+          <Link href="/" className="group inline-block">
+            <p className="font-display text-3xl tracking-wide transition group-hover:text-gold-bright">
+              Aura
+            </p>
             <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.35em] text-gold-bright">
               Jewellery
             </p>
           </Link>
-          <p className="mt-4 text-sm leading-relaxed text-white/65">
-            Handcrafted gold &amp; diamond piercing jewellery in one collection.
+          <p className="mt-5 text-sm leading-relaxed text-white/65">
+            Handcrafted gold &amp; diamond piercing jewellery — hallmarked,
+            certified, and styled for every placement.
           </p>
         </div>
 
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold-bright">
-            Navigate
-          </p>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/75">
+          <p className="eyebrow text-gold-bright">Navigate</p>
+          <ul className="mt-4 space-y-3 text-sm text-white/75">
             <li>
-              <Link href="/">Home</Link>
+              <Link href="/" className="link-quiet transition hover:text-white">
+                Home
+              </Link>
             </li>
             <li>
-              <Link href="/shop">Shop by Ornament</Link>
+              <Link
+                href="/shop"
+                className="link-quiet transition hover:text-white"
+              >
+                Shop collection
+              </Link>
             </li>
             <li>
-              <Link href="/piercings">Shop by Piercing</Link>
+              <Link
+                href="/piercings"
+                className="link-quiet transition hover:text-white"
+              >
+                Shop by piercing
+              </Link>
             </li>
             <li>
-              <Link href="/customize">Customize</Link>
+              <Link
+                href="/customize"
+                className="link-quiet transition hover:text-white"
+              >
+                Customize
+              </Link>
             </li>
             <li>
-              <Link href="/guides">Guides</Link>
+              <Link
+                href="/guides"
+                className="link-quiet transition hover:text-white"
+              >
+                Guides
+              </Link>
             </li>
           </ul>
         </div>
 
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold-bright">
-            Help
-          </p>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/75">
+          <p className="eyebrow text-gold-bright">Help</p>
+          <ul className="mt-4 space-y-3 text-sm text-white/75">
             <li>
-              <Link href="/cart">Cart</Link>
+              <Link
+                href="/cart"
+                className="link-quiet transition hover:text-white"
+              >
+                Cart
+              </Link>
             </li>
             <li>
-              <Link href="/guides/aftercare">Aftercare</Link>
+              <Link
+                href="/guides/aftercare"
+                className="link-quiet transition hover:text-white"
+              >
+                Aftercare
+              </Link>
             </li>
             <li>
-              <Link href="/appointment">Appointment</Link>
+              <Link
+                href="/appointment"
+                className="link-quiet transition hover:text-white"
+              >
+                Book appointment
+              </Link>
             </li>
           </ul>
         </div>
 
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold-bright">
-            Contact
-          </p>
+          <p className="eyebrow text-gold-bright">Contact</p>
           <p className="mt-4 text-sm leading-relaxed text-white/75">
-            hello@aurajewellery.com
+            <a
+              href="mailto:hello@aurajewellery.com"
+              className="transition hover:text-white"
+            >
+              hello@aurajewellery.com
+            </a>
             <br />
-            +91 98765 43210
+            <a href="tel:+919876543210" className="transition hover:text-white">
+              +91 98765 43210
+            </a>
           </p>
           <a
             href="https://wa.me/919876543210"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-[#25D366] px-4 text-sm font-bold text-white"
+            className="btn-wa mt-6"
           >
             Chat on WhatsApp
           </a>
         </div>
       </div>
-      <div className="border-t border-white/10 px-4 py-4 text-center text-xs text-white/40">
+      <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-white/40">
         © {new Date().getFullYear()} Aura Jewellery. All rights reserved.
       </div>
     </footer>
