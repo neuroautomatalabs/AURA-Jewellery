@@ -1,0 +1,42 @@
+{
+  "rates": [
+    {
+      "key": "22kt-gold-rate",
+      "label": "22kT Gold Rate",
+      "amount": 13220
+    },
+    {
+      "key": "22kt-coin-rate",
+      "label": "22kT Coin Rate",
+      "amount": 0
+    },
+    {
+      "key": "18kt-gold-rate",
+      "label": "18kT Gold Rate",
+      "amount": 11035
+    },
+    {
+      "key": "22kt-return-rate",
+      "label": "22kT Return Rate",
+      "amount": 12030
+    },
+    {
+      "key": "silver-rate",
+      "label": "Silver Rate",
+      "amount": 235
+    },
+    {
+      "key": "8g-gold-rate",
+      "label": "8g Gold Rate",
+      "amount": 105760
+    }
+  ],
+  "gold22": 13220,
+  "gold18": 11035,
+  "silver": 235,
+  "gold8g": 105760,
+  "return22": 12030,
+  "updatedAt": "2026.08.01 04:17:54 PM",
+  "source": "https://coimbatorejewellery.org/",
+  "fetchedAt": "2026-08-02T10:15:32.954Z"
+}

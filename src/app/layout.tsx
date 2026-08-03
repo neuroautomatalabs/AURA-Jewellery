@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Manrope } from "next/font/google";
 import { Header } from "@/components/Header";
+import { GoldRateBar } from "@/components/GoldRateBar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { CartProvider } from "@/components/CartProvider";
 import "./globals.css";
 
 const display = Playfair_Display({
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Aura Jewellery",
   },
   description:
-    "Shop hallmarked gold and certified diamond studs. Explore the animated ear map, filter 18K · 22K · Diamond, and book an appointment.",
+    "Shop hallmarked gold and certified diamond studs. Explore the animated ear and nose maps, filter 18K · 22K · Diamond, and book an appointment.",
 };
 
 export const viewport: Viewport = {
@@ -41,10 +43,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
       <body className="site-shell antialiased">
-        <Header />
-        <main className="site-main">{children}</main>
-        <Footer />
-        <WhatsAppFloat />
+        <CartProvider>
+          <Header>
+            <GoldRateBar />
+          </Header>
+          <main className="site-main">{children}</main>
+          <Footer />
+          <WhatsAppFloat />
+        </CartProvider>
       </body>
     </html>
   );

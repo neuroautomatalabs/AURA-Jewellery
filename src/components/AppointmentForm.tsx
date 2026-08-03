@@ -85,59 +85,46 @@ export function AppointmentForm() {
     form.reset();
   }
 
-  const field =
-    "w-full min-h-12 rounded-sm border border-line bg-white px-3.5 text-ink outline-none transition focus:border-royal";
-
   return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-xl space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block sm:col-span-2">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Full name
-          </span>
-          <input name="name" required autoComplete="name" className={field} />
+          <span className="field-label">Full name</span>
+          <input name="name" required autoComplete="name" className="field-input" />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Email
-          </span>
+          <span className="field-label">Email</span>
           <input
             name="email"
             type="email"
             required
             autoComplete="email"
             inputMode="email"
-            className={field}
+            className="field-input"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Phone
-          </span>
+          <span className="field-label">Phone</span>
           <input
             name="phone"
             type="tel"
             required
             autoComplete="tel"
             inputMode="tel"
-            className={field}
+            className="field-input"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Preferred date
-          </span>
-          <input name="date" type="date" required className={field} />
+          <span className="field-label">Preferred date</span>
+          <input name="date" type="date" required className="field-input" />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Preferred time
-          </span>
-          <select name="time" required className={field} defaultValue="">
+          <span className="field-label">Preferred time</span>
+          <select name="time" required className="field-input" defaultValue="">
             <option value="" disabled>
               Select time
             </option>
@@ -151,10 +138,8 @@ export function AppointmentForm() {
         </label>
 
         <label className="block sm:col-span-2">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Interest
-          </span>
-          <select name="interest" required className={field} defaultValue="">
+          <span className="field-label">Interest</span>
+          <select name="interest" required className="field-input" defaultValue="">
             <option value="" disabled>
               Select
             </option>
@@ -166,10 +151,8 @@ export function AppointmentForm() {
         </label>
 
         <label className="block sm:col-span-2">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Piercing placement (optional)
-          </span>
-          <select name="piercing" className={field} defaultValue="">
+          <span className="field-label">Piercing placement (optional)</span>
+          <select name="piercing" className="field-input" defaultValue="">
             <option value="">Not sure yet</option>
             {piercings.map((p) => (
               <option key={p.id} value={p.name}>
@@ -180,14 +163,12 @@ export function AppointmentForm() {
         </label>
 
         <label className="block sm:col-span-2">
-          <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-ink-muted">
-            Notes
-          </span>
+          <span className="field-label">Notes</span>
           <textarea
             name="notes"
             rows={4}
             placeholder="Tell us about your ear goals, metal preference, or questions…"
-            className={`${field} min-h-[7rem] py-3`}
+            className="field-input"
           />
         </label>
       </div>
@@ -195,7 +176,7 @@ export function AppointmentForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="flex min-h-12 w-full items-center justify-center rounded-sm bg-royal text-sm font-medium tracking-wide text-white transition hover:bg-royal-mid disabled:opacity-60"
+        className="btn-primary w-full"
       >
         {status === "loading" ? "Sending…" : "Submit appointment request"}
       </button>
@@ -203,7 +184,7 @@ export function AppointmentForm() {
       {message && (
         <p
           role="status"
-          className={`rounded-sm px-4 py-3 text-sm ${
+          className={`rounded-xl px-4 py-3.5 text-sm ${
             status === "success"
               ? "bg-royal-soft text-royal"
               : "bg-red-50 text-red-800"
@@ -214,8 +195,8 @@ export function AppointmentForm() {
       )}
 
       <p className="text-center text-xs leading-relaxed text-ink-muted">
-        On the live site this opens your email app with a pre-filled request. Local
-        server mode can send dual confirmation emails via SMTP.
+        On the live site this opens your email app with a pre-filled request.
+        Local server mode can send dual confirmation emails via SMTP.
       </p>
     </form>
   );

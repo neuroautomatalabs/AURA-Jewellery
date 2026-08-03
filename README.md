@@ -23,6 +23,8 @@ Live site: [https://neuroautomatalabs.github.io/AURA-Jewellery/](https://neuroau
 
 Pushes to `main` build a static export and deploy via GitHub Actions. In the repo settings, set **Pages → Source** to **GitHub Actions**.
 
+**Gold rates on Pages:** CJA rates are fetched at build time into `public/gold-rates.json` (also refreshed by a daily scheduled deploy). Local `npm run dev` still uses the live `/api/gold-rate` scrape.
+
 Appointment booking on Pages opens the visitor’s email app (no SMTP server). Local/server deploys can still use the `/api/appointment` route.
 
 ## Appointment emails
@@ -39,6 +41,23 @@ BUSINESS_EMAIL=studio-inbox@yourdomain.com
 
 Without SMTP, the form runs in demo mode (logs to the server console).
 
+## Cart payments (Razorpay)
+
+Cart checkout uses **Razorpay** (UPI, cards, netbanking) — not WhatsApp.
+
+1. Create keys at [Razorpay Dashboard → API Keys](https://dashboard.razorpay.com/app/keys).
+2. Add to `.env.local`:
+
+```env
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+```
+
+3. Run `npm run dev`, add items to cart, pay with Razorpay test cards/UPI.
+
+**Note:** Payment APIs need a Node server (`npm run dev` / Vercel / similar). GitHub Pages static export removes `/api` routes, so live payments won’t work on Pages alone — deploy the Next app to a host that supports API routes.
+
 ## Routes
 
 | Route | Purpose |
@@ -48,3 +67,5 @@ Without SMTP, the form runs in demo mode (logs to the server console).
 | `/piercings` | Interactive ear map |
 | `/guides` | Piercing guides |
 | `/appointment` | Booking → email to studio + client |
+| `/cart` | Cart → Razorpay payment |
+| `/checkout/success` | Payment confirmation |

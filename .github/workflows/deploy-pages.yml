@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Refresh baked CJA gold rates on GitHub Pages daily (IST morning ~9:30).
+  schedule:
+    - cron: "0 4 * * *"
 
 permissions:
   contents: read
@@ -30,7 +33,11 @@ jobs:
       - name: Install
         run: npm ci
 
-      # Static export cannot include dynamic API routes (SMTP).
+      # Bake live CJA rates into public/gold-rates.json for static Pages.
+      - name: Fetch CJA gold rates
+        run: npm run fetch-gold-rates
+
+      # Static export cannot include dynamic API routes (SMTP / Razorpay).
       - name: Remove server API for static export
         run: rm -rf src/app/api
 
