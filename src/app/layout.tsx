@@ -1,9 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Manrope } from "next/font/google";
-import { Header } from "@/components/Header";
-import { GoldRateBar } from "@/components/GoldRateBar";
-import { Footer } from "@/components/Footer";
-import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/components/CartProvider";
 import "./globals.css";
 
@@ -25,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Aura Jewellery",
   },
   description:
-    "Shop hallmarked gold and certified diamond studs. Explore the animated ear and nose maps, filter 18K · 22K · Diamond, and book an appointment.",
+    "Shop hallmarked gold and certified diamond studs. Explore the animated ear and nose maps, filter Gold · Diamond · Ear & Nose, and book an appointment.",
 };
 
 export const viewport: Viewport = {
@@ -41,16 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${display.variable} ${body.variable} h-full`}
+    >
       <body className="site-shell antialiased">
-        <CartProvider>
-          <Header>
-            <GoldRateBar />
-          </Header>
-          <main className="site-main">{children}</main>
-          <Footer />
-          <WhatsAppFloat />
-        </CartProvider>
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

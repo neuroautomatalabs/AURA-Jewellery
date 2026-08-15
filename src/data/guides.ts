@@ -37,7 +37,6 @@ export const guides: Guide[] = [
     readMinutes: 3,
     content: [
       "18k gold is durable and ideal for everyday cartilage and lobe wear.",
-      "22k gold has a richer colour and traditional feel — best for lobes and statement pieces.",
       "Diamond studs add light and work beautifully as anchors in a curated ear edit.",
       "Match size to placement: smaller stones for tragus and rook, fuller stones for lobe and conch.",
       "Not sure? Tap a spot on our ear map and filter Gold or Diamond to see what fits.",

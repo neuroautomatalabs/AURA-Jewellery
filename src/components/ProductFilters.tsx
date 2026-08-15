@@ -1,26 +1,28 @@
 "use client";
 
-import type { GoldKarat, MetalType } from "@/lib/types";
+import type { MetalType, PiercingRegion } from "@/lib/types";
 
 export type MetalFilter = MetalType | "all";
-export type KaratFilter = GoldKarat | "all";
+export type CategoryFilter = PiercingRegion | "all";
 
 type Props = {
   metal: MetalFilter;
-  karat: KaratFilter;
+  category?: CategoryFilter;
+  showCategory?: boolean;
   piercingLabel?: string | null;
   onMetalChange: (metal: MetalFilter) => void;
-  onKaratChange: (karat: KaratFilter) => void;
+  onCategoryChange?: (category: CategoryFilter) => void;
   onClearPiercing?: () => void;
   resultCount?: number;
 };
 
 export function ProductFilters({
   metal,
-  karat,
+  category = "all",
+  showCategory = false,
   piercingLabel,
   onMetalChange,
-  onKaratChange,
+  onCategoryChange,
   onClearPiercing,
   resultCount,
 }: Props) {
@@ -58,24 +60,24 @@ export function ProductFilters({
           )}
         </div>
 
-        {(metal === "gold" || metal === "all") && (
+        {showCategory && onCategoryChange && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
-              Karat
+              Category
             </span>
             {(
               [
                 { id: "all", label: "All" },
-                { id: "18k", label: "18K" },
-                { id: "22k", label: "22K" },
+                { id: "ear", label: "Ear" },
+                { id: "nose", label: "Nose" },
               ] as const
             ).map((opt) => (
               <button
                 key={opt.id}
                 type="button"
-                onClick={() => onKaratChange(opt.id)}
+                onClick={() => onCategoryChange(opt.id)}
                 className={`min-h-10 rounded-full px-4 text-sm font-medium transition ${
-                  karat === opt.id
+                  category === opt.id
                     ? "bg-gold text-royal-deep shadow-sm"
                     : "bg-gold-soft text-ink hover:brightness-95"
                 }`}

@@ -48,14 +48,11 @@ export function HeroSection() {
         className="relative mx-auto flex min-h-[82dvh] max-w-7xl flex-col justify-end px-4 pb-16 pt-24 sm:px-6 sm:pb-24 lg:justify-center lg:pb-20"
         style={{ transform: `translate3d(0, ${offset * -0.12}px, 0)` }}
       >
-        <p className="animate-rise eyebrow text-gold-bright">
-          Piercing jewellery studio
-        </p>
-        <h1 className="animate-rise-delay-1 font-display mt-4 text-5xl tracking-wide sm:text-6xl md:text-7xl lg:text-[5.25rem]">
+        <h1 className="animate-rise font-display text-5xl tracking-wide sm:text-6xl md:text-7xl lg:text-[5.25rem]">
           Aura Jewellery
         </h1>
         <p className="animate-rise-delay-2 mt-5 max-w-lg text-lg font-medium leading-snug text-white/95 sm:text-xl md:text-2xl">
-          Gold &amp; diamond studs — one collection, every piercing.
+          Gold &amp; diamond — everyone deserves a glitter.
         </p>
         <p className="animate-rise-delay-2 mt-3 max-w-md text-sm leading-relaxed text-white/70 sm:text-base">
           Shop the full catalog, or explore our animated ear map to find pieces
@@ -63,10 +60,10 @@ export function HeroSection() {
         </p>
         <div className="animate-rise-delay-3 mt-9 flex flex-wrap gap-3">
           <Link href="/shop" className="btn-gold">
-            Shop collection
+            Shop by collection
           </Link>
           <Link href="/piercings" className="btn-outline-light">
-            Try ear map
+            Shop by piercing
           </Link>
         </div>
       </div>

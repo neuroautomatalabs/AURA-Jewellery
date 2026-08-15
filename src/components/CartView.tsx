@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
-import { formatPrice, getProduct } from "@/data/products";
+import { formatPrice, getProduct, products as seedProducts } from "@/data/products";
 import { RETURN_POLICY } from "@/lib/return-policy";
 import { loadRazorpayScript } from "@/lib/razorpay-client";
 import type { Product, CartItem } from "@/lib/types";
@@ -18,12 +18,33 @@ export function CartView() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [line1, setLine1] = useState("");
+  const [line2, setLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [note, setNote] = useState("");
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [catalog, setCatalog] = useState<Product[]>(seedProducts);
+
+  useEffect(() => {
+    fetch("/api/catalog")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { products?: Product[] } | null) => {
+        if (Array.isArray(data?.products) && data.products.length) {
+          setCatalog(data.products);
+        }
+      })
+      .catch(() => undefined);
+  }, []);
+
+  const findProduct = (id: string) =>
+    catalog.find((p) => p.id === id) ?? getProduct(id);
 
   const lines: Line[] = [];
   for (const item of items) {
-    const product = getProduct(item.productId);
+    const product = findProduct(item.productId);
     if (product) lines.push({ item, product });
   }
 
@@ -39,6 +60,10 @@ export function CartView() {
       setError("Please enter your name, email and phone before paying.");
       return;
     }
+    if (!line1.trim() || !city.trim() || !state.trim() || !/^\d{6}$/.test(pincode.trim())) {
+      setError("Please enter a complete shipping address with a 6-digit pincode.");
+      return;
+    }
 
     setPaying(true);
     try {
@@ -52,6 +77,14 @@ export function CartView() {
             email: email.trim(),
             phone: phone.trim(),
           },
+          shipping: {
+            line1: line1.trim(),
+            line2: line2.trim() || undefined,
+            city: city.trim(),
+            state: state.trim(),
+            pincode: pincode.trim(),
+          },
+          note: note.trim() || undefined,
         }),
       });
 
@@ -99,6 +132,7 @@ export function CartView() {
             const verifyData = (await verifyRes.json()) as {
               success?: boolean;
               paymentId?: string;
+              auraOrderId?: string | null;
               error?: string;
             };
 
@@ -115,6 +149,9 @@ export function CartView() {
               payment_id: verifyData.paymentId ?? response.razorpay_payment_id,
               order_id: response.razorpay_order_id,
             });
+            if (verifyData.auraOrderId) {
+              params.set("aura_order", verifyData.auraOrderId);
+            }
             router.push(`/checkout/success?${params.toString()}`);
           } catch {
             setError(
@@ -297,6 +334,70 @@ export function CartView() {
                 autoComplete="tel"
                 className="field-input"
                 placeholder="+91 …"
+              />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="field-label">Address</span>
+              <input
+                type="text"
+                value={line1}
+                onChange={(e) => setLine1(e.target.value)}
+                autoComplete="address-line1"
+                className="field-input"
+                placeholder="House / street"
+              />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="field-label">Landmark (optional)</span>
+              <input
+                type="text"
+                value={line2}
+                onChange={(e) => setLine2(e.target.value)}
+                autoComplete="address-line2"
+                className="field-input"
+              />
+            </label>
+            <label className="block">
+              <span className="field-label">City</span>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                autoComplete="address-level2"
+                className="field-input"
+              />
+            </label>
+            <label className="block">
+              <span className="field-label">State</span>
+              <input
+                type="text"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                autoComplete="address-level1"
+                className="field-input"
+              />
+            </label>
+            <label className="block">
+              <span className="field-label">Pincode</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)}
+                autoComplete="postal-code"
+                className="field-input"
+                placeholder="600001"
+              />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="field-label">Order note (optional)</span>
+              <input
+                type="text"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="field-input"
+                placeholder="Gift wrap, delivery hint…"
               />
             </label>
           </div>

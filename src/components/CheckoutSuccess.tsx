@@ -6,11 +6,13 @@ import Link from "next/link";
 export function CheckoutSuccess() {
   const [paymentId, setPaymentId] = useState("");
   const [orderId, setOrderId] = useState("");
+  const [auraOrder, setAuraOrder] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setPaymentId(params.get("payment_id") ?? "");
     setOrderId(params.get("order_id") ?? "");
+    setAuraOrder(params.get("aura_order") ?? "");
   }, []);
 
   return (
@@ -39,17 +41,23 @@ export function CheckoutSuccess() {
             payment and will confirm your order shortly.
           </p>
 
-          {(paymentId || orderId) && (
+          {(paymentId || orderId || auraOrder) && (
             <div className="mt-8 rounded-xl border border-line bg-surface px-4 py-4 text-left text-sm">
-              {paymentId && (
+              {auraOrder && (
                 <p className="text-ink-muted">
+                  Order{" "}
+                  <span className="font-semibold text-ink">{auraOrder}</span>
+                </p>
+              )}
+              {paymentId && (
+                <p className={`${auraOrder ? "mt-2" : ""} text-ink-muted`}>
                   Payment ID{" "}
                   <span className="font-semibold text-ink">{paymentId}</span>
                 </p>
               )}
               {orderId && (
                 <p className="mt-2 text-ink-muted">
-                  Order ID{" "}
+                  Razorpay order{" "}
                   <span className="font-semibold text-ink">{orderId}</span>
                 </p>
               )}

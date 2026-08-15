@@ -11,7 +11,6 @@ const links = [
   { href: "/piercings", label: "Piercings" },
   { href: "/customize", label: "Customize" },
   { href: "/guides", label: "Guides" },
-  { href: "/appointment", label: "Appointment" },
 ];
 
 export function Header({ children }: { children?: ReactNode }) {
@@ -40,13 +39,14 @@ export function Header({ children }: { children?: ReactNode }) {
 
       <header className="border-b border-white/10 bg-royal text-white shadow-[0_8px_28px_rgb(7_20_64/0.28)]">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
-          <Link href="/" className="group shrink-0">
-            <span className="font-display text-2xl tracking-[0.08em] transition group-hover:text-gold-bright sm:text-[1.85rem]">
-              Aura
-            </span>
-            <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.32em] text-gold-bright">
-              Jewellery
-            </span>
+          <Link href="/" className="group flex h-10 shrink-0 items-center overflow-hidden sm:h-12">
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/Logo-01.png`}
+              alt="Aura Jewellery"
+              width={208}
+              height={67}
+              className="nav-logo transition group-hover:opacity-90"
+            />
           </Link>
 
           <nav
@@ -117,8 +117,8 @@ export function Header({ children }: { children?: ReactNode }) {
                 </span>
               )}
             </Link>
-            <Link href="/shop" className="btn-gold hidden sm:inline-flex">
-              Shop now
+            <Link href="/appointment" className="btn-gold hidden sm:inline-flex">
+              Appointment
             </Link>
             <button
               type="button"
@@ -178,8 +178,8 @@ export function Header({ children }: { children?: ReactNode }) {
                 </Link>
               </li>
               <li className="pt-2">
-                <Link href="/shop" className="btn-gold w-full">
-                  Shop now
+                <Link href="/appointment" className="btn-gold w-full">
+                  Appointment
                 </Link>
               </li>
             </ul>

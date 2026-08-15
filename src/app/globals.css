@@ -70,8 +70,28 @@ a {
 
 img {
   max-width: 100%;
-  height: auto;
   display: block;
+}
+
+img:not([data-nimg="fill"]) {
+  height: auto;
+}
+
+img.nav-logo {
+  width: auto;
+  height: 2.5rem;
+  max-width: 10.5rem;
+  max-height: 2.5rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+@media (min-width: 640px) {
+  img.nav-logo {
+    height: 3rem;
+    max-height: 3rem;
+    max-width: 12rem;
+  }
 }
 
 button,
@@ -159,7 +179,8 @@ textarea {
   border-color: color-mix(in srgb, var(--royal) 22%, var(--line));
 }
 
-.field-input:focus {
+.field-input:focus,
+.field-input:focus-within {
   border-color: var(--royal);
   background: var(--white);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--royal) 14%, transparent);
@@ -227,6 +248,13 @@ textarea.field-input {
 }
 .btn-gold:active {
   transform: translateY(1px);
+}
+.btn-gold:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  filter: none;
+  box-shadow: none;
+  transform: none;
 }
 
 .btn-outline-light {
@@ -473,7 +501,6 @@ textarea.field-input {
 }
 
 .metal-shine {
-  position: relative;
   overflow: hidden;
 }
 .metal-shine::after {
@@ -591,3 +618,9 @@ textarea.field-input {
     display: none;
   }
 }
+
+
+
+
+
+
