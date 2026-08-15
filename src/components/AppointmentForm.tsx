@@ -1,7 +1,13 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { piercings } from "@/data/piercings";
+import {
+  APPOINTMENT_INTERESTS,
+  APPOINTMENT_TIMES,
+} from "@/lib/appointments";
+import { saveBrowserAppointment } from "@/lib/browser-store";
+import { isStaticPages } from "@/lib/static-pages";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -9,6 +15,14 @@ const STUDIO_EMAIL = "studio-inbox@yourdomain.com";
 
 function asText(value: FormDataEntryValue | undefined) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function todayLocalISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function openMailto(data: Record<string, FormDataEntryValue>) {
@@ -27,10 +41,10 @@ function openMailto(data: Record<string, FormDataEntryValue>) {
       `Name: ${name}`,
       `Email: ${email}`,
       `Phone: ${phone}`,
+      `Interest: ${interest}`,
       `Preferred date: ${date}`,
       `Preferred time: ${time}`,
-      `Interest: ${interest}`,
-      `Piercing: ${piercing}`,
+      ...(interest === "Piercing" ? [`Piercing: ${piercing}`] : []),
       `Notes: ${notes}`,
     ].join("\n"),
   );
@@ -41,6 +55,8 @@ function openMailto(data: Record<string, FormDataEntryValue>) {
 export function AppointmentForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const [interest, setInterest] = useState("");
+  const minDate = useMemo(() => todayLocalISO(), []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -71,10 +87,24 @@ export function AppointmentForm() {
             "Appointment request sent. Check your inbox for confirmation.",
         );
         form.reset();
+        setInterest("");
         return;
       }
     } catch {
       // No API available (e.g. GitHub Pages static host).
+    }
+
+    if (isStaticPages) {
+      saveBrowserAppointment({
+        name: asText(data.name),
+        email: asText(data.email),
+        phone: asText(data.phone),
+        date: asText(data.date),
+        time: asText(data.time),
+        interest: asText(data.interest),
+        piercing: asText(data.piercing),
+        notes: asText(data.notes),
+      });
     }
 
     openMailto(data);
@@ -83,6 +113,7 @@ export function AppointmentForm() {
       "Opening your email app with the appointment details. Send the message to complete your request.",
     );
     form.reset();
+    setInterest("");
   }
 
   return (
@@ -117,9 +148,49 @@ export function AppointmentForm() {
           />
         </label>
 
+        <label className="block sm:col-span-2">
+          <span className="field-label">Interest</span>
+          <select
+            name="interest"
+            required
+            className="field-input"
+            value={interest}
+            onChange={(e) => setInterest(e.target.value)}
+          >
+            <option value="" disabled>
+              Select
+            </option>
+            {APPOINTMENT_INTERESTS.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {interest === "Piercing" && (
+          <label className="block sm:col-span-2">
+            <span className="field-label">Piercing placement (optional)</span>
+            <select name="piercing" className="field-input" defaultValue="">
+              <option value="">Not sure yet</option>
+              {piercings.map((p) => (
+                <option key={p.id} value={p.name}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         <label className="block">
           <span className="field-label">Preferred date</span>
-          <input name="date" type="date" required className="field-input" />
+          <input
+            name="date"
+            type="date"
+            required
+            min={minDate}
+            className="field-input"
+          />
         </label>
 
         <label className="block">
@@ -128,38 +199,15 @@ export function AppointmentForm() {
             <option value="" disabled>
               Select time
             </option>
-            <option>10:00 AM</option>
-            <option>11:30 AM</option>
-            <option>1:00 PM</option>
-            <option>3:00 PM</option>
-            <option>5:00 PM</option>
-            <option>6:30 PM</option>
-          </select>
-        </label>
-
-        <label className="block sm:col-span-2">
-          <span className="field-label">Interest</span>
-          <select name="interest" required className="field-input" defaultValue="">
-            <option value="" disabled>
-              Select
-            </option>
-            <option value="gold">Gold jewellery</option>
-            <option value="diamond">Diamond jewellery</option>
-            <option value="piercing">New piercing</option>
-            <option value="styling">Ear styling consultation</option>
-          </select>
-        </label>
-
-        <label className="block sm:col-span-2">
-          <span className="field-label">Piercing placement (optional)</span>
-          <select name="piercing" className="field-input" defaultValue="">
-            <option value="">Not sure yet</option>
-            {piercings.map((p) => (
-              <option key={p.id} value={p.name}>
-                {p.name}
+            {APPOINTMENT_TIMES.map((slot) => (
+              <option key={slot} value={slot}>
+                {slot}
               </option>
             ))}
           </select>
+          <span className="mt-1.5 block text-xs text-ink-muted">
+            11:00 AM – 8:00 PM · lunch 2:00–3:00 PM
+          </span>
         </label>
 
         <label className="block sm:col-span-2">

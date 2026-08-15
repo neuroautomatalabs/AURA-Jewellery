@@ -38,13 +38,18 @@ jobs:
         run: npm run fetch-gold-rates
 
       # Static export cannot include dynamic API routes (SMTP / Razorpay).
+      # Admin stays in the build and runs in the browser for client testing.
       - name: Remove server API for static export
-        run: rm -rf src/app/api
+        run: |
+          rm -rf src/app/api
+          rm -f src/proxy.ts
 
       - name: Build static site
         run: npm run build
         env:
           GITHUB_PAGES: "true"
+          NEXT_PUBLIC_GITHUB_PAGES: "true"
+          NEXT_PUBLIC_ADMIN_PASSWORD: aura-demo
 
       - name: Add .nojekyll
         run: touch out/.nojekyll

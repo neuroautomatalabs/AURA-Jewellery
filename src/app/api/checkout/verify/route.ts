@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
+import { updateStore } from "@/lib/store";
 
 type Body = {
   razorpay_order_id?: string;
@@ -53,9 +54,26 @@ export async function POST(request: Request) {
     );
   }
 
+  const paid = await updateStore((store) => {
+    const row = store.orders.find((o) => o.razorpayOrderId === orderId);
+    if (!row) return null;
+    row.razorpayPaymentId = paymentId;
+    if (row.status === "pending_payment") {
+      row.status = "paid";
+      row.timeline.push({
+        status: "paid",
+        at: new Date().toISOString(),
+        note: "Razorpay payment verified",
+      });
+    }
+    row.updatedAt = new Date().toISOString();
+    return row;
+  });
+
   return NextResponse.json({
     success: true,
     orderId,
     paymentId,
+    auraOrderId: paid?.id ?? null,
   });
 }

@@ -1,7 +1,7 @@
 export function WhatsAppFloat() {
   return (
     <a
-      href="https://wa.me/919876543210?text=Hi%20Aura%20Jewellery%2C%20I%20need%20help%20choosing%20a%20stud."
+      href="https://wa.me/918111000852?text=Hi%20Aura%20Jewellery%2C%20I%20need%20help%20choosing%20a%20stud."
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-wa py-3 pl-3.5 pr-4 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:scale-[1.03] hover:bg-wa-deep sm:bottom-6 sm:right-6"

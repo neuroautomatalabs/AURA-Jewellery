@@ -1,5 +1,5 @@
 export type MetalType = "gold" | "diamond";
-export type GoldKarat = "18k" | "22k";
+export type GoldKarat = "18k";
 
 export type EarPiercingId =
   | "aura-helix"
@@ -41,8 +41,8 @@ export interface PiercingSpot {
   description: string;
 }
 
-/** Typical face diameters for single studs */
-export type StudSize = "2.5mm" | "3mm" | "4mm" | "5mm" | "6mm";
+/** Face size shown on the product page, e.g. 2.5mm */
+export type StudSize = string;
 
 export interface ProductSpecRow {
   label: string;
@@ -65,10 +65,17 @@ export interface Product {
   style: "stud" | "hoop" | "charm";
   /** Pair studs skip size picker; single studs show mm options */
   unit: "single" | "pair";
+  /** Face sizes offered on the product page. Defaults to 2.5–6mm for single studs. */
+  sizes?: StudSize[];
   description: string;
   /** Optional face size / hardware notes for the detail table */
   productSize?: string;
   backSide?: string;
+  /** Overrides for the live Product detail table */
+  metalDisplay?: string;
+  metalTone?: string;
+  styleDisplay?: string;
+  certification?: string;
   diamondShape?: string;
   diamondCarat?: string;
   diamondCount?: string;

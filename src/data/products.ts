@@ -1,5 +1,6 @@
-import type { Product, ProductSpecRow } from "@/lib/types";
+import type { PiercingRegion, Product, ProductSpecRow } from "@/lib/types";
 import { getPiercing } from "@/data/piercings";
+import { getProductSizes } from "@/lib/return-policy";
 
 export const products: Product[] = [
   {
@@ -65,9 +66,9 @@ export const products: Product[] = [
   },
   {
     id: "g22-lotus-stud",
-    name: "Heritage Lotus Stud in 22K Gold",
+    name: "Heritage Lotus Stud in 18K Gold",
     metal: "gold",
-    karat: "22k",
+    karat: "18k",
     price: 6890,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "conch", "nostril"],
@@ -75,13 +76,13 @@ export const products: Product[] = [
       "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=85",
     style: "stud",
     unit: "single",
-    description: "Traditional lotus motif in rich 22K gold.",
+    description: "Traditional lotus motif in hallmarked 18K gold.",
   },
   {
     id: "g22-coin-stud",
-    name: "Polished Coin Stud – 22K",
+    name: "Polished Coin Stud – 18K",
     metal: "gold",
-    karat: "22k",
+    karat: "18k",
     price: 7420,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "contraconch", "conch"],
@@ -93,9 +94,9 @@ export const products: Product[] = [
   },
   {
     id: "g22-temple-drop",
-    name: "Temple Drop Charm – 22K Gold",
+    name: "Temple Drop Charm – 18K Gold",
     metal: "gold",
-    karat: "22k",
+    karat: "18k",
     price: 9200,
     currency: "INR",
     piercings: ["lobe-lower", "low-helix"],
@@ -271,9 +272,9 @@ export const products: Product[] = [
   },
   {
     id: "g22-lobe-pair",
-    name: "Heritage Pair Studs – 22K Gold",
+    name: "Heritage Pair Studs – 18K Gold",
     metal: "gold",
-    karat: "22k",
+    karat: "18k",
     price: 11200,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe"],
@@ -281,7 +282,7 @@ export const products: Product[] = [
       "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800&q=85",
     style: "stud",
     unit: "pair",
-    description: "Matched 22K studs for traditional lobe styling.",
+    description: "Matched 18K studs for traditional lobe styling.",
   },
   {
     id: "d-antitragus-mini",
@@ -332,9 +333,9 @@ export const products: Product[] = [
   },
   {
     id: "g22-nose-ring",
-    name: "Polished Nose Ring – 22K",
+    name: "Polished Nose Ring – 18K",
     metal: "gold",
-    karat: "22k",
+    karat: "18k",
     price: 4580,
     currency: "INR",
     piercings: ["nostril", "septum"],
@@ -429,7 +430,19 @@ export function getProductSku(product: Product) {
 }
 
 export function getProductImages(product: Product): string[] {
-  if (product.images?.length) return product.images;
+  if (product.images?.length) {
+    const seen = new Set<string>();
+    const all: string[] = [];
+    for (const src of [product.image, ...product.images]) {
+      if (!src || seen.has(src)) continue;
+      seen.add(src);
+      all.push(src);
+    }
+    if (all.length) return all;
+  }
+  if (!product.image || product.image.startsWith("/") || product.image.startsWith("blob:")) {
+    return product.image ? [product.image] : [];
+  }
   const base = product.image.split("?")[0];
   return [
     `${base}?w=900&q=85`,
@@ -439,13 +452,47 @@ export function getProductImages(product: Product): string[] {
   ];
 }
 
-export function getMetalLabel(product: Product) {
+export function getMetalLabel(product: Pick<Product, "metal" | "karat" | "metalDisplay">) {
+  if (product.metalDisplay) return product.metalDisplay;
   if (product.metal === "diamond") {
     return "18K Solid Gold setting · Natural Diamond";
   }
-  return product.karat === "22k"
-    ? "22K Solid Gold (BIS Hallmark)"
-    : "18K Solid Gold (BIS Hallmark)";
+  return "18K Solid Gold (BIS Hallmark)";
+}
+
+export function getMetalTone(product: Pick<Product, "metalTone">) {
+  return product.metalTone || "Yellow Gold Solid";
+}
+
+export function getStyleLabel(product: Pick<Product, "style" | "unit" | "styleDisplay">) {
+  if (product.styleDisplay) return product.styleDisplay;
+  return `${product.style.charAt(0).toUpperCase()}${product.style.slice(1)} · ${
+    product.unit === "pair" ? "Sold as pair" : "Single piece"
+  }`;
+}
+
+export function getBackSide(product: Pick<Product, "style" | "backSide">) {
+  if (product.backSide) return product.backSide;
+  return product.style === "hoop"
+    ? "Hinged / clicker closure"
+    : "Secure flat or screw back";
+}
+
+export function getCertification(product: Pick<Product, "metal" | "certification">) {
+  if (product.certification) return product.certification;
+  return product.metal === "diamond"
+    ? "BIS Hallmark gold · Natural diamond with certificate"
+    : "BIS Hallmark";
+}
+
+export function getSizeTableValue(
+  product: Pick<Product, "style" | "unit" | "sizes" | "productSize">,
+) {
+  if (product.productSize) return product.productSize;
+  if (product.style !== "stud") return "";
+  if (product.unit === "pair") return "Matched pair · lobe ready";
+  const offered = getProductSizes(product);
+  return offered.length ? offered.join(" · ") : "Select size at checkout";
 }
 
 export function getProductDetailRows(product: Product): ProductSpecRow[] {
@@ -457,38 +504,16 @@ export function getProductDetailRows(product: Product): ProductSpecRow[] {
   const rows: ProductSpecRow[] = [
     { label: "Style No", value: getProductSku(product) },
     { label: "Metal", value: getMetalLabel(product) },
-    {
-      label: "Metal tone",
-      value: "Yellow Gold Solid",
-    },
-    {
-      label: "Style",
-      value: `${product.style.charAt(0).toUpperCase()}${product.style.slice(1)} · ${
-        product.unit === "pair" ? "Sold as pair" : "Single piece"
-      }`,
-    },
+    { label: "Metal tone", value: getMetalTone(product) },
+    { label: "Style", value: getStyleLabel(product) },
   ];
 
-  if (product.productSize) {
-    rows.push({ label: "Product size", value: product.productSize });
-  } else if (product.style === "stud") {
-    rows.push({
-      label: "Product size",
-      value: product.unit === "pair" ? "Matched pair · lobe ready" : "Select size at checkout",
-    });
+  const sizeValue = getSizeTableValue(product);
+  if (sizeValue) {
+    rows.push({ label: "Product size", value: sizeValue });
   }
 
-  if (product.backSide) {
-    rows.push({ label: "Back / post", value: product.backSide });
-  } else {
-    rows.push({
-      label: "Back / post",
-      value:
-        product.style === "hoop"
-          ? "Hinged / clicker closure"
-          : "Secure flat or screw back",
-    });
-  }
+  rows.push({ label: "Back / post", value: getBackSide(product) });
 
   if (placements) {
     rows.push({ label: "Best for", value: placements });
@@ -496,43 +521,52 @@ export function getProductDetailRows(product: Product): ProductSpecRow[] {
 
   rows.push({
     label: "Certification",
-    value:
-      product.metal === "diamond"
-        ? "BIS Hallmark gold · Natural diamond with certificate"
-        : "BIS Hallmark",
+    value: getCertification(product),
   });
 
   return rows;
 }
+
+export const DIAMOND_DEFAULTS = {
+  diamondShape: "Round Brilliant Cut",
+  diamondCarat: "See certificate",
+  diamondCount: "1 Pc",
+  diamondColor: "E-F",
+  diamondClarity: "VVS",
+} as const;
 
 export function getDiamondDetailRows(product: Product): ProductSpecRow[] {
   if (product.metal !== "diamond") return [];
   return [
     {
       label: "Shape",
-      value: product.diamondShape ?? "Round Brilliant Cut",
+      value: product.diamondShape ?? DIAMOND_DEFAULTS.diamondShape,
     },
     {
       label: "Carat weight",
-      value: product.diamondCarat ?? "See certificate",
+      value: product.diamondCarat ?? DIAMOND_DEFAULTS.diamondCarat,
     },
     {
       label: "Number of diamonds",
-      value: product.diamondCount ?? "1 Pc",
+      value: product.diamondCount ?? DIAMOND_DEFAULTS.diamondCount,
     },
     {
       label: "Color grade",
-      value: product.diamondColor ?? "E-F",
+      value: product.diamondColor ?? DIAMOND_DEFAULTS.diamondColor,
     },
     {
       label: "Clarity grade",
-      value: product.diamondClarity ?? "VVS",
+      value: product.diamondClarity ?? DIAMOND_DEFAULTS.diamondClarity,
     },
   ];
 }
 
-export function getRelatedProducts(product: Product, limit = 4) {
-  return products
+export function getRelatedProducts(
+  product: Product,
+  limit = 4,
+  pool: Product[] = products,
+) {
+  return pool
     .filter((p) => p.id !== product.id)
     .map((p) => ({
       product: p,
@@ -546,24 +580,34 @@ export function getRelatedProducts(product: Product, limit = 4) {
     .map((x) => x.product);
 }
 
+export function productHasRegion(product: Product, region: PiercingRegion) {
+  return product.piercings.some((id) => getPiercing(id)?.region === region);
+}
+
+export function getCategoryLabel(product: Pick<Product, "piercings">) {
+  const regions = new Set<PiercingRegion>();
+  for (const id of product.piercings) {
+    const region = getPiercing(id)?.region;
+    if (region) regions.add(region);
+  }
+  if (regions.size === 0) return "—";
+  return [...regions]
+    .map((region) => (region === "ear" ? "Ear" : "Nose"))
+    .join(" · ");
+}
+
 export function filterProducts(
   list: Product[],
   opts: {
     metal?: "gold" | "diamond" | "all";
-    karat?: "18k" | "22k" | "all";
+    category?: PiercingRegion | "all";
     piercing?: string | null;
   },
 ) {
   return list.filter((p) => {
     if (opts.metal && opts.metal !== "all" && p.metal !== opts.metal)
       return false;
-    if (
-      opts.karat &&
-      opts.karat !== "all" &&
-      opts.metal !== "diamond" &&
-      p.metal === "gold" &&
-      p.karat !== opts.karat
-    )
+    if (opts.category && opts.category !== "all" && !productHasRegion(p, opts.category))
       return false;
     if (
       opts.piercing &&

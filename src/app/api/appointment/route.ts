@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import {
+  isAppointmentInterest,
+  isAppointmentTime,
+} from "@/lib/appointments";
+import { saveAppointment, uid } from "@/lib/store";
 
 type Body = {
   name?: string;
@@ -40,6 +45,39 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!isAppointmentInterest(String(interest))) {
+    return NextResponse.json(
+      { error: "Please choose piercing or consultation." },
+      { status: 400 },
+    );
+  }
+
+  if (!isAppointmentTime(String(time))) {
+    return NextResponse.json(
+      {
+        error:
+          "Please choose a time between 11:00 AM and 8:00 PM, excluding lunch (2:00–3:00 PM).",
+      },
+      { status: 400 },
+    );
+  }
+
+  const stamp = new Date().toISOString();
+  await saveAppointment({
+    id: uid("apt"),
+    name: String(name),
+    email: String(email),
+    phone: String(phone),
+    date: String(date),
+    time: String(time),
+    interest: String(interest),
+    piercing: piercing ? String(piercing) : "",
+    notes: notes ? String(notes) : "",
+    status: "new",
+    createdAt: stamp,
+    updatedAt: stamp,
+  });
+
   const businessEmail =
     process.env.BUSINESS_EMAIL || process.env.SMTP_USER || "";
   const host = process.env.SMTP_HOST;
@@ -53,11 +91,10 @@ New appointment request — Aura Jewellery
 Name: ${name}
 Email: ${email}
 Phone: ${phone}
-Date: ${date}
-Time: ${time}
 Interest: ${interest}
-Piercing: ${piercing || "Not specified"}
-Notes: ${notes || "—"}
+Preferred date: ${date}
+Preferred time: ${time}
+${interest === "Piercing" ? `Piercing: ${piercing || "Not specified"}\n` : ""}Notes: ${notes || "—"}
 `.trim();
 
   const userHtml = `
@@ -65,10 +102,13 @@ Notes: ${notes || "—"}
     <h1 style="color:#0a2463; font-weight:500; letter-spacing:0.12em;">AURA JEWELLERY</h1>
     <p>Hi ${name},</p>
     <p>Thank you for booking with us. We have received your appointment request and will confirm shortly.</p>
-    <p><strong>Date:</strong> ${date}<br/>
-    <strong>Time:</strong> ${time}<br/>
-    <strong>Interest:</strong> ${interest}<br/>
-    <strong>Placement:</strong> ${piercing || "To discuss"}</p>
+    <p><strong>Interest:</strong> ${interest}<br/>
+    <strong>Preferred date:</strong> ${date}<br/>
+    <strong>Preferred time:</strong> ${time}${
+      interest === "Piercing"
+        ? `<br/><strong>Placement:</strong> ${piercing || "To discuss"}`
+        : ""
+    }</p>
     <p style="color:#5c6578; font-size:14px;">If you need to change anything, reply to this email.</p>
   </div>
   `;

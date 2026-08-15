@@ -87,7 +87,7 @@ export function GoldRateBar() {
     return <FallbackBar message="Loading today's CJA gold rates…" />;
   }
 
-  if (!rates || rates.gold22 == null) {
+  if (!rates || rates.gold18 == null) {
     return (
       <FallbackBar message="Hallmarked gold & certified diamonds · Free styling consultation" />
     );
@@ -99,7 +99,6 @@ export function GoldRateBar() {
         <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-bright/90 sm:inline">
           Today&apos;s CJA rate
         </span>
-        {rates.gold22 != null && <RateChip label="22K" amount={rates.gold22} />}
         {rates.gold18 != null && <RateChip label="18K" amount={rates.gold18} />}
         {rates.silver != null && rates.silver > 0 && (
           <span className="hidden sm:inline">

@@ -1,10 +1,19 @@
 import type { CartItem } from "@/lib/types";
-import { getProduct } from "@/data/products";
+import { getSellableProduct } from "@/lib/catalog";
+import { getProductSizes, productNeedsSize } from "@/lib/return-policy";
 
 export type CheckoutCustomer = {
   name: string;
   email: string;
   phone: string;
+};
+
+export type CheckoutShipping = {
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
 };
 
 export type CheckoutLine = {
@@ -16,12 +25,12 @@ export type CheckoutLine = {
   lineTotal: number;
 };
 
-export function buildCheckoutLines(items: CartItem[]): {
+export async function buildCheckoutLines(items: CartItem[]): Promise<{
   lines: CheckoutLine[];
   amountPaise: number;
   amountInr: number;
   error?: string;
-} {
+}> {
   if (!Array.isArray(items) || items.length === 0) {
     return {
       lines: [],
@@ -43,7 +52,7 @@ export function buildCheckoutLines(items: CartItem[]): {
       };
     }
 
-    const product = getProduct(item.productId);
+    const product = await getSellableProduct(item.productId);
     if (!product) {
       return {
         lines: [],
@@ -53,13 +62,21 @@ export function buildCheckoutLines(items: CartItem[]): {
       };
     }
 
-    const needsSize = product.style === "stud" && product.unit === "single";
-    if (needsSize && !item.size) {
+    const offered = getProductSizes(product);
+    if (productNeedsSize(product) && !item.size) {
       return {
         lines: [],
         amountPaise: 0,
         amountInr: 0,
         error: `Please choose a size for ${product.name}.`,
+      };
+    }
+    if (item.size && offered.length && !offered.includes(item.size)) {
+      return {
+        lines: [],
+        amountPaise: 0,
+        amountInr: 0,
+        error: `Please choose a valid size for ${product.name}.`,
       };
     }
 
@@ -81,4 +98,14 @@ export function buildCheckoutLines(items: CartItem[]): {
     amountInr,
     amountPaise: amountInr * 100,
   };
+}
+
+export function validShipping(shipping: CheckoutShipping | undefined) {
+  if (!shipping) return false;
+  return (
+    shipping.line1.trim().length > 3 &&
+    shipping.city.trim().length > 1 &&
+    shipping.state.trim().length > 1 &&
+    /^\d{6}$/.test(shipping.pincode.trim())
+  );
 }

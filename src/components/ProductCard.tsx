@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/data/products";
 import { Tilt3D } from "@/components/Motion";
+import { ProductImage } from "@/components/ProductImage";
 
 export function ProductCard({ product }: { product: Product }) {
   const href = `/products/${product.id}`;
@@ -20,7 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
           href={href}
           className="metal-shine relative aspect-square overflow-hidden bg-surface"
         >
-          <Image
+          <ProductImage
             src={product.image}
             alt={product.name}
             fill

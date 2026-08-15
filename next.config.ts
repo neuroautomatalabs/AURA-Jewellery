@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   basePath: basePath || undefined,
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_GITHUB_PAGES: isGithubPages ? "true" : "",
   },
   images: {
     unoptimized: isGithubPages,

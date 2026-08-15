@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import type { Product, ProductSpecRow, StudSize } from "@/lib/types";
 import {
@@ -12,11 +11,12 @@ import {
   getProductImages,
   getProductSku,
 } from "@/data/products";
-import { RETURN_POLICY, STUD_SIZES } from "@/lib/return-policy";
+import { ProductImage } from "@/components/ProductImage";
+import { RETURN_POLICY, getProductSizes, productNeedsSize } from "@/lib/return-policy";
 import { useCart } from "@/components/CartProvider";
 
 function needsSize(product: Product) {
-  return product.style === "stud" && product.unit === "single";
+  return productNeedsSize(product);
 }
 
 function SpecTable({
@@ -51,11 +51,18 @@ function SpecTable({
   );
 }
 
-export function ProductDetail({ product }: { product: Product }) {
+export function ProductDetail({
+  product,
+  preview = false,
+}: {
+  product: Product;
+  preview?: boolean;
+}) {
   const { addItem, items } = useCart();
   const images = getProductImages(product);
   const sku = getProductSku(product);
   const showSize = needsSize(product);
+  const offeredSizes = getProductSizes(product);
   const detailRows = getProductDetailRows(product);
   const diamondRows = getDiamondDetailRows(product);
 
@@ -63,7 +70,6 @@ export function ProductDetail({ product }: { product: Product }) {
   const [size, setSize] = useState<StudSize | null>(null);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
-  const [showPolicy, setShowPolicy] = useState(false);
 
   const inCart = items
     .filter((i) => i.productId === product.id)
@@ -74,8 +80,7 @@ export function ProductDetail({ product }: { product: Product }) {
     setSize(null);
     setQty(1);
     setAdded(false);
-    setShowPolicy(false);
-  }, [product.id]);
+  }, [product.id, offeredSizes.join(",")]);
 
   function prevImage() {
     setActive((i) => (i === 0 ? images.length - 1 : i - 1));
@@ -87,7 +92,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
   function confirmAdd() {
     if (showSize && !size) return;
-    addItem(product.id, showSize ? size : null, qty);
+    if (!preview) addItem(product.id, showSize ? size : null, qty);
     setAdded(true);
   }
 
@@ -99,13 +104,21 @@ export function ProductDetail({ product }: { product: Product }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <nav className="mb-7 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.14em] text-ink-muted">
-        <Link href="/" className="transition hover:text-royal">
-          Home
-        </Link>
+        {preview ? (
+          <span>Home</span>
+        ) : (
+          <Link href="/" className="transition hover:text-royal">
+            Home
+          </Link>
+        )}
         <span aria-hidden>/</span>
-        <Link href="/shop" className="transition hover:text-royal">
-          Shop
-        </Link>
+        {preview ? (
+          <span>Shop</span>
+        ) : (
+          <Link href="/shop" className="transition hover:text-royal">
+            Shop
+          </Link>
+        )}
         <span aria-hidden>/</span>
         <span className="line-clamp-1 font-semibold text-royal">
           {product.name}
@@ -114,17 +127,22 @@ export function ProductDetail({ product }: { product: Product }) {
 
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
         <div>
-          <div className="gallery-3d relative aspect-square overflow-hidden rounded-2xl bg-surface shadow-[var(--shadow-soft)]">
-            <div className="metal-shine absolute inset-0">
-              <Image
-                src={images[active]}
+          <div className="gallery-3d metal-shine relative aspect-square w-full overflow-hidden rounded-2xl bg-surface shadow-[var(--shadow-soft)]">
+            {images[0] ? (
+              <ProductImage
+                src={images[active] ?? images[0]}
                 alt={`${product.name} — image ${active + 1}`}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
-            </div>
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-ink-muted">
+                Add a photo to preview
+              </div>
+            )}
+            {images.length > 0 && (
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-royal-deep/60 to-transparent px-4 py-3.5">
               <button
                 type="button"
@@ -146,6 +164,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 ›
               </button>
             </div>
+            )}
           </div>
 
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -154,7 +173,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 key={src + i}
                 type="button"
                 onClick={() => setActive(i)}
-                className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                className={`relative block h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
                   i === active
                     ? "border-royal shadow-sm"
                     : "border-transparent opacity-70 hover:opacity-100"
@@ -162,12 +181,13 @@ export function ProductDetail({ product }: { product: Product }) {
                 aria-label={`View image ${i + 1}`}
                 aria-current={i === active}
               >
-                <Image
+                <ProductImage
                   src={src}
                   alt=""
-                  fill
+                  width={80}
+                  height={80}
                   sizes="80px"
-                  className="object-cover"
+                  className="h-full w-full object-cover"
                 />
               </button>
             ))}
@@ -204,7 +224,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 Size
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {STUD_SIZES.map((s) => (
+                {offeredSizes.map((s) => (
                   <button
                     key={s}
                     type="button"
@@ -273,12 +293,21 @@ export function ProductDetail({ product }: { product: Product }) {
                 {qty > 1 ? ` · ×${qty}` : ""}
               </p>
               <div className="flex gap-2">
-                <Link href="/cart" className="btn-primary flex-1 text-center">
-                  View cart
-                </Link>
-                <Link href="/shop" className="btn-outline flex-1 text-center">
-                  Keep shopping
-                </Link>
+                {preview ? (
+                  <>
+                    <span className="btn-primary flex-1 text-center">View cart</span>
+                    <span className="btn-outline flex-1 text-center">Keep shopping</span>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/cart" className="btn-primary flex-1 text-center">
+                      View cart
+                    </Link>
+                    <Link href="/shop" className="btn-outline flex-1 text-center">
+                      Keep shopping
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           ) : (
@@ -293,31 +322,18 @@ export function ProductDetail({ product }: { product: Product }) {
           )}
 
           <div className="mt-5 rounded-xl border border-line bg-surface px-4 py-3.5">
-            <button
-              type="button"
-              onClick={() => setShowPolicy((v) => !v)}
-              className="flex w-full items-center justify-between gap-2 text-left"
-            >
-              <span className="text-sm font-semibold text-royal">
-                Return policy
-              </span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                {showPolicy ? "Hide" : "Details"}
-              </span>
-            </button>
+            <p className="text-sm font-semibold text-royal">Return policy</p>
             <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">
               {RETURN_POLICY.summary}
             </p>
-            {showPolicy && (
-              <ul className="mt-3 space-y-1.5 border-t border-line pt-3 text-xs leading-relaxed text-ink-muted">
-                {RETURN_POLICY.points.map((point) => (
-                  <li key={point} className="flex gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gold" />
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="mt-3 space-y-1.5 border-t border-line pt-3 text-xs leading-relaxed text-ink-muted">
+              {RETURN_POLICY.points.map((point) => (
+                <li key={point} className="flex gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gold" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

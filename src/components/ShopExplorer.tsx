@@ -5,22 +5,25 @@ import { EarMap } from "@/components/EarMap";
 import { NoseMap } from "@/components/NoseMap";
 import {
   ProductFilters,
-  type KaratFilter,
+  type CategoryFilter,
   type MetalFilter,
 } from "@/components/ProductFilters";
 import { ProductGrid } from "@/components/ProductGrid";
-import { filterProducts, products } from "@/data/products";
+import { filterProducts } from "@/data/products";
 import { getPiercing } from "@/data/piercings";
+import { useLiveCatalog } from "@/lib/use-live-catalog";
 import type {
   EarPiercingId,
   NosePiercingId,
   PiercingId,
   PiercingRegion,
+  Product,
 } from "@/lib/types";
 
 type Props = {
+  products: Product[];
   initialMetal?: MetalFilter;
-  initialKarat?: KaratFilter;
+  initialCategory?: CategoryFilter;
   initialPiercing?: PiercingId | null;
   mode?: "catalog" | "ear-map";
   title?: string;
@@ -28,15 +31,17 @@ type Props = {
 };
 
 export function ShopExplorer({
+  products,
   initialMetal = "all",
-  initialKarat = "all",
+  initialCategory = "all",
   initialPiercing = null,
   mode = "catalog",
   title = "Gold & Diamond",
-  subtitle = "One collection — filter by metal and karat.",
+  subtitle = "One collection — filter by metal and category.",
 }: Props) {
+  const liveProducts = useLiveCatalog(products);
   const [metal, setMetal] = useState<MetalFilter>(initialMetal);
-  const [karat, setKarat] = useState<KaratFilter>(initialKarat);
+  const [category, setCategory] = useState<CategoryFilter>(initialCategory);
   const [region, setRegion] = useState<PiercingRegion>("ear");
   const [piercing, setPiercing] = useState<PiercingId | null>(
     mode === "ear-map" ? initialPiercing : null,
@@ -46,12 +51,12 @@ export function ShopExplorer({
 
   const list = useMemo(
     () =>
-      filterProducts(products, {
+      filterProducts(liveProducts, {
         metal,
-        karat: metal === "diamond" ? "all" : karat,
+        category: mode === "catalog" ? category : "all",
         piercing: mode === "ear-map" ? piercing : null,
       }),
-    [metal, karat, piercing, mode],
+    [metal, category, piercing, mode, liveProducts],
   );
 
   function switchRegion(next: PiercingRegion) {
@@ -125,14 +130,12 @@ export function ShopExplorer({
 
       <ProductFilters
         metal={metal}
-        karat={karat}
+        category={category}
+        showCategory={mode === "catalog"}
         piercingLabel={mode === "ear-map" ? piercingMeta?.name : null}
         resultCount={list.length}
-        onMetalChange={(m) => {
-          setMetal(m);
-          if (m === "diamond") setKarat("all");
-        }}
-        onKaratChange={setKarat}
+        onMetalChange={setMetal}
+        onCategoryChange={setCategory}
         onClearPiercing={
           mode === "ear-map" ? () => setPiercing(null) : undefined
         }

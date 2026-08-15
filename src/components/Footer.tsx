@@ -75,18 +75,18 @@ export function Footer() {
             </li>
             <li>
               <Link
-                href="/guides/aftercare"
-                className="link-quiet transition hover:text-white"
-              >
-                Aftercare
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/appointment"
                 className="link-quiet transition hover:text-white"
               >
                 Book appointment
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/guides/aftercare"
+                className="link-quiet transition hover:text-white"
+              >
+                Aftercare
               </Link>
             </li>
           </ul>
@@ -96,18 +96,18 @@ export function Footer() {
           <p className="eyebrow text-gold-bright">Contact</p>
           <p className="mt-4 text-sm leading-relaxed text-white/75">
             <a
-              href="mailto:hello@aurajewellery.com"
+              href="mailto:info@aurajewellery.in"
               className="transition hover:text-white"
             >
-              hello@aurajewellery.com
+              info@aurajewellery.in
             </a>
             <br />
-            <a href="tel:+919876543210" className="transition hover:text-white">
-              +91 98765 43210
+            <a href="tel:+918111000852" className="transition hover:text-white">
+              +91 8111 000 852
             </a>
           </p>
           <a
-            href="https://wa.me/919876543210"
+            href="https://wa.me/918111000852"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-wa mt-6"

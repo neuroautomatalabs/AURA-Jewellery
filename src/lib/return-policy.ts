@@ -10,3 +10,23 @@ export const RETURN_POLICY = {
 } as const;
 
 export const STUD_SIZES = ["2.5mm", "3mm", "4mm", "5mm", "6mm"] as const;
+
+export type DefaultStudSize = (typeof STUD_SIZES)[number];
+
+export function getProductSizes(product: {
+  style: string;
+  unit: string;
+  sizes?: string[];
+}): string[] {
+  if (product.style !== "stud" || product.unit !== "single") return [];
+  if (Array.isArray(product.sizes)) return product.sizes;
+  return [...STUD_SIZES];
+}
+
+export function productNeedsSize(product: {
+  style: string;
+  unit: string;
+  sizes?: string[];
+}) {
+  return getProductSizes(product).length > 0;
+}
