@@ -11,7 +11,7 @@ import { isStaticPages } from "@/lib/static-pages";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-const STUDIO_EMAIL = "studio-inbox@yourdomain.com";
+const STUDIO_EMAIL = "info@aurajewellery.in";
 
 function asText(value: FormDataEntryValue | undefined) {
   return typeof value === "string" ? value.trim() : "";

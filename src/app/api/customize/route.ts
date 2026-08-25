@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getMailConfig, sendMail } from "@/lib/mail";
 import { saveCustomRequest, uid } from "@/lib/store";
 import { saveUpload } from "@/lib/uploads";
 
@@ -59,6 +60,53 @@ export async function POST(request: Request) {
     createdAt: stamp,
     updatedAt: stamp,
   });
+
+  const summary = `
+New custom request — Aura Jewellery
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Product: ${product}
+Weight: ${weight}
+Notes: ${notes || "—"}
+Reference image: ${imageUrl || "None"}
+`.trim();
+
+  const mail = getMailConfig();
+  if (mail) {
+    try {
+      await sendMail({
+        fromName: "Aura Jewellery Custom",
+        to: mail.businessEmail,
+        replyTo: email,
+        subject: `Custom request · ${name} · ${product}`,
+        text: summary,
+      });
+
+      await sendMail({
+        fromName: "Aura Jewellery",
+        to: email,
+        subject: "We received your Aura Jewellery custom request",
+        text: `Hi ${name},\n\nThank you for your custom request for a ${product} (${weight}). We will review the details and get back to you shortly.\n\n— Aura Jewellery`,
+        html: `
+  <div style="font-family: Georgia, serif; color: #0e1420; max-width: 560px;">
+    <h1 style="color:#0a2463; font-weight:500; letter-spacing:0.12em;">AURA JEWELLERY</h1>
+    <p>Hi ${name},</p>
+    <p>Thank you for your custom request. We have received the details below and will get back to you shortly.</p>
+    <p><strong>Product:</strong> ${product}<br/>
+    <strong>Weight:</strong> ${weight}</p>
+    <p style="color:#5c6578; font-size:14px;">If you need to change anything, reply to this email.</p>
+  </div>
+        `,
+      });
+    } catch (err) {
+      console.error("Custom request email failed", err);
+      // Request is already saved — don't fail the submission over mail.
+    }
+  } else {
+    console.log("[customize demo mode]\n", summary);
+  }
 
   return NextResponse.json({
     message: "Custom request received. We will get back to you shortly.",

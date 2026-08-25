@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "fetch-gold-rates": "node scripts/fetch-gold-rates.mjs",
-    "start": "next start",
+    "start": "next start --hostname 0.0.0.0 --port ${PORT:-3000}",
     "lint": "eslint"
   },
   "dependencies": {
