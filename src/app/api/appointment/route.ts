@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import {
   isAppointmentInterest,
   isAppointmentTime,
 } from "@/lib/appointments";
+import { getMailConfig, sendMail } from "@/lib/mail";
 import { saveAppointment, uid } from "@/lib/store";
 
 type Body = {
@@ -78,13 +78,6 @@ export async function POST(request: Request) {
     updatedAt: stamp,
   });
 
-  const businessEmail =
-    process.env.BUSINESS_EMAIL || process.env.SMTP_USER || "";
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || 587);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
   const summary = `
 New appointment request — Aura Jewellery
 
@@ -113,7 +106,8 @@ ${interest === "Piercing" ? `Piercing: ${piercing || "Not specified"}\n` : ""}No
   </div>
   `;
 
-  if (!host || !user || !pass || !businessEmail) {
+  const mail = getMailConfig();
+  if (!mail) {
     console.log("[appointment demo mode]\n", summary);
     return NextResponse.json({
       message:
@@ -123,24 +117,17 @@ ${interest === "Piercing" ? `Piercing: ${piercing || "Not specified"}\n` : ""}No
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
-      auth: { user, pass },
-    });
-
-    await transporter.sendMail({
-      from: `"Aura Jewellery Appointments" <${user}>`,
-      to: businessEmail,
-      replyTo: email,
+    await sendMail({
+      fromName: "Aura Jewellery Appointments",
+      to: mail.businessEmail,
+      replyTo: String(email),
       subject: `Appointment · ${name} · ${date} ${time}`,
       text: summary,
     });
 
-    await transporter.sendMail({
-      from: `"Aura Jewellery" <${user}>`,
-      to: email,
+    await sendMail({
+      fromName: "Aura Jewellery",
+      to: String(email),
       subject: "Your Aura Jewellery appointment request",
       text: `Hi ${name},\n\nThank you for booking with Aura Jewellery. We received your request for ${date} at ${time}.\n\nWe will confirm shortly.\n\n— Aura Jewellery`,
       html: userHtml,

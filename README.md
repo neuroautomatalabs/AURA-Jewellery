@@ -34,11 +34,11 @@ Appointment booking on Pages opens the visitor’s email app (no SMTP server) an
 Copy `.env.example` → `.env.local`:
 
 ```env
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-studio@gmail.com
-SMTP_PASS=your-app-password
-BUSINESS_EMAIL=studio-inbox@yourdomain.com
+SMTP_HOST=smtpout.secureserver.net
+SMTP_PORT=465
+SMTP_USER=info@aurajewellery.in
+SMTP_PASS=your-mailbox-password
+BUSINESS_EMAIL=info@aurajewellery.in
 ```
 
 Without SMTP, the form runs in demo mode (logs to the server console).

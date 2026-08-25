@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+rzp-key.csv
 
 # owner dashboard data (created at runtime)
 /data/aura-store.json
