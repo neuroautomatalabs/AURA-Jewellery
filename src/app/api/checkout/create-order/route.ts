@@ -181,7 +181,7 @@ export async function POST(request: Request) {
     const detail = formatRazorpayError(err);
     return NextResponse.json(
       {
-        error: `Could not start payment. ${detail} Check Razorpay keys in Vercel env vars.`,
+        error: `Could not start payment. ${detail} (key ${keyId.slice(0, 15)}…)`,
       },
       { status: 500 },
     );
