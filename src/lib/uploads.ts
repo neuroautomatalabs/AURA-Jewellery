@@ -4,8 +4,20 @@ import path from "path";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
+function isVercelRuntime() {
+  return process.env.VERCEL === "1";
+}
+
+function blobToken() {
+  return (
+    process.env.BLOB_READ_WRITE_TOKEN?.trim() ||
+    process.env.READ_WRITE_TOKEN?.trim() ||
+    ""
+  );
+}
+
 function hasBlobStorage() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+  return Boolean(blobToken());
 }
 
 function extensionFor(file: File) {
@@ -36,13 +48,21 @@ export async function saveUpload(file: File, prefix = "file") {
     .toString(36)
     .slice(2, 7)}${ext}`;
 
-  if (hasBlobStorage()) {
+  const token = blobToken();
+  if (token) {
     const blob = await put(name, bytes, {
       access: "public",
       contentType: file.type || contentTypeFor(ext),
       addRandomSuffix: false,
+      token,
     });
     return blob.url;
+  }
+
+  if (isVercelRuntime()) {
+    throw new Error(
+      "Image upload is not configured. Connect Vercel Blob and redeploy so BLOB_READ_WRITE_TOKEN is set.",
+    );
   }
 
   await mkdir(UPLOAD_DIR, { recursive: true });

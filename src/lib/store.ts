@@ -31,6 +31,11 @@ async function readStoreFile(): Promise<AuraStore> {
 }
 
 async function writeStoreFile(store: AuraStore) {
+  if (process.env.VERCEL === "1") {
+    throw new Error(
+      "Store is not configured. Connect Neon Postgres so POSTGRES_URL is set on Vercel.",
+    );
+  }
   await mkdir(path.dirname(STORE_PATH), { recursive: true });
   await writeFile(STORE_PATH, JSON.stringify(store, null, 2), "utf8");
 }
