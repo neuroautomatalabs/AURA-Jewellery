@@ -5,24 +5,17 @@ import { useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProductDetail } from "@/components/ProductDetail";
-import { lookupLiveProduct } from "@/lib/use-live-catalog";
+import { products as seedProducts } from "@/data/products";
 import type { Product } from "@/lib/types";
-
-function currentPath() {
-  const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
-  let path = window.location.pathname;
-  if (base && path.startsWith(base)) path = path.slice(base.length);
-  return path.replace(/\/$/, "") || "/";
-}
 
 export default function NotFound() {
   const [product, setProduct] = useState<Product | undefined>();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const match = currentPath().match(/^\/products\/([^/]+)$/);
+    const match = window.location.pathname.match(/^\/products\/([^/]+)$/);
     if (match) {
-      setProduct(lookupLiveProduct(decodeURIComponent(match[1])));
+      setProduct(seedProducts.find((p) => p.id === decodeURIComponent(match[1])));
     }
     setReady(true);
   }, []);

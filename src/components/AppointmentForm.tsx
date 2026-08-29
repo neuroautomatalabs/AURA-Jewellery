@@ -6,16 +6,8 @@ import {
   APPOINTMENT_INTERESTS,
   APPOINTMENT_TIMES,
 } from "@/lib/appointments";
-import { saveBrowserAppointment } from "@/lib/browser-store";
-import { isStaticPages } from "@/lib/static-pages";
 
 type Status = "idle" | "loading" | "success" | "error";
-
-const STUDIO_EMAIL = "info@aurajewellery.in";
-
-function asText(value: FormDataEntryValue | undefined) {
-  return typeof value === "string" ? value.trim() : "";
-}
 
 function todayLocalISO() {
   const d = new Date();
@@ -23,33 +15,6 @@ function todayLocalISO() {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
-}
-
-function openMailto(data: Record<string, FormDataEntryValue>) {
-  const name = asText(data.name);
-  const email = asText(data.email);
-  const phone = asText(data.phone);
-  const date = asText(data.date);
-  const time = asText(data.time);
-  const interest = asText(data.interest);
-  const piercing = asText(data.piercing) || "Not sure yet";
-  const notes = asText(data.notes) || "—";
-
-  const subject = encodeURIComponent(`Appointment request — ${name}`);
-  const body = encodeURIComponent(
-    [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${phone}`,
-      `Interest: ${interest}`,
-      `Preferred date: ${date}`,
-      `Preferred time: ${time}`,
-      ...(interest === "Piercing" ? [`Piercing: ${piercing}`] : []),
-      `Notes: ${notes}`,
-    ].join("\n"),
-  );
-
-  window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;
 }
 
 export function AppointmentForm() {
@@ -65,55 +30,30 @@ export function AppointmentForm() {
 
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
-    const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
     try {
-      const res = await fetch(`${base}/api/appointment`, {
+      const res = await fetch("/api/appointment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const contentType = res.headers.get("content-type") || "";
-      if (contentType.includes("application/json")) {
-        const json = (await res.json()) as { message?: string; error?: string };
-        if (!res.ok) {
-          setStatus("error");
-          setMessage(json.error || "Something went wrong. Please try again.");
-          return;
-        }
-        setStatus("success");
-        setMessage(
-          json.message ||
-            "Appointment request sent. Check your inbox for confirmation.",
-        );
-        form.reset();
-        setInterest("");
+      const json = (await res.json()) as { message?: string; error?: string };
+      if (!res.ok) {
+        setStatus("error");
+        setMessage(json.error || "Something went wrong. Please try again.");
         return;
       }
+      setStatus("success");
+      setMessage(
+        json.message ||
+          "Appointment request sent. Check your inbox for confirmation.",
+      );
+      form.reset();
+      setInterest("");
     } catch {
-      // No API available (e.g. GitHub Pages static host).
+      setStatus("error");
+      setMessage("Could not send the request. Please try again.");
     }
-
-    if (isStaticPages) {
-      saveBrowserAppointment({
-        name: asText(data.name),
-        email: asText(data.email),
-        phone: asText(data.phone),
-        date: asText(data.date),
-        time: asText(data.time),
-        interest: asText(data.interest),
-        piercing: asText(data.piercing),
-        notes: asText(data.notes),
-      });
-    }
-
-    openMailto(data);
-    setStatus("success");
-    setMessage(
-      "Opening your email app with the appointment details. Send the message to complete your request.",
-    );
-    form.reset();
-    setInterest("");
   }
 
   return (

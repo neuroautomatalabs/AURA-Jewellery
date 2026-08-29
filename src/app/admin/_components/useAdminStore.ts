@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { clientReadStore, watchStore } from "@/lib/admin-client";
+import { clientReadStore } from "@/lib/admin-client";
 import type { AuraStore } from "@/lib/commerce";
 
 export function useAdminStore() {
@@ -19,9 +19,6 @@ export function useAdminStore() {
 
   useEffect(() => {
     void reload();
-    return watchStore(() => {
-      void reload();
-    });
   }, [reload]);
 
   return { store, error, reload };

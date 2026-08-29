@@ -2,10 +2,7 @@ import { getProduct, products as seedProducts } from "@/data/products";
 import { readStore, toPublicProduct } from "@/lib/store";
 import type { Product } from "@/lib/types";
 
-const isStaticExport = process.env.GITHUB_PAGES === "true";
-
 export async function getCatalogProducts(): Promise<Product[]> {
-  if (isStaticExport) return seedProducts;
   try {
     const store = await readStore();
     return store.products
@@ -17,7 +14,6 @@ export async function getCatalogProducts(): Promise<Product[]> {
 }
 
 export async function getBestsellerProducts(limit = 8): Promise<Product[]> {
-  if (isStaticExport) return seedProducts.slice(0, limit);
   try {
     const store = await readStore();
     const live = store.products.filter((p) => p.published);
@@ -33,7 +29,6 @@ export async function getBestsellerProducts(limit = 8): Promise<Product[]> {
 }
 
 export async function getSellableProduct(id: string): Promise<Product | undefined> {
-  if (isStaticExport) return getProduct(id);
   try {
     const store = await readStore();
     const found = store.products.find((p) => p.id === id);

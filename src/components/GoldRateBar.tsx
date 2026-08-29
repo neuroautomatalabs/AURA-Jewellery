@@ -33,41 +33,53 @@ function FallbackBar({ message }: { message: string }) {
   );
 }
 
-async function loadRates(base: string): Promise<CjaRates> {
-  // Prefer live API when a Node server is available (local / Vercel).
+async function fetchLiveRates(): Promise<CjaRates> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 12_000);
+
   try {
-    const live = await fetch(`${base}/api/gold-rate`, { cache: "no-store" });
+    const live = await fetch("/api/gold-rate", {
+      cache: "no-store",
+      signal: controller.signal,
+    });
     if (live.ok) {
       return (await live.json()) as CjaRates;
     }
-  } catch {
-    // Fall through to static JSON (GitHub Pages).
+  } finally {
+    window.clearTimeout(timeout);
   }
 
-  const baked = await fetch(`${base}/gold-rates.json`, { cache: "no-store" });
+  const baked = await fetch("/gold-rates.json", { cache: "no-store" });
   if (!baked.ok) {
     throw new Error(`HTTP ${baked.status}`);
   }
   return (await baked.json()) as CjaRates;
 }
 
-export function GoldRateBar() {
-  const [rates, setRates] = useState<CjaRates | null>(null);
-  const [failed, setFailed] = useState(false);
+export function GoldRateBar({
+  initialRates = null,
+}: {
+  initialRates?: CjaRates | null;
+}) {
+  const [rates, setRates] = useState<CjaRates | null>(initialRates);
+  const [failed, setFailed] = useState(
+    initialRates != null && initialRates.gold18 == null,
+  );
 
   useEffect(() => {
     let cancelled = false;
-    const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
     async function load() {
       try {
-        const data = await loadRates(base);
+        const data = await fetchLiveRates();
         if (!cancelled) {
           setRates(data);
-          setFailed(false);
+          setFailed(data.gold18 == null);
         }
       } catch {
-        if (!cancelled) setFailed(true);
+        if (!cancelled && initialRates == null) {
+          setFailed(true);
+        }
       }
     }
 
@@ -81,7 +93,7 @@ export function GoldRateBar() {
       cancelled = true;
       window.removeEventListener("focus", onFocus);
     };
-  }, []);
+  }, [initialRates]);
 
   if (!rates && !failed) {
     return <FallbackBar message="Loading today's CJA gold rates…" />;

@@ -8,7 +8,7 @@ Premium piercing jewellery website — gold & diamond studs, interactive ear map
 - **Centre:** White
 - **Accent:** Soft gold
 
-## Run
+## Run locally
 
 ```bash
 npm install
@@ -17,21 +17,28 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Deploy (GitHub Pages)
+Copy `.env.example` → `.env.local` and fill in SMTP, Razorpay, and admin credentials.
 
-Live site: [https://neuroautomatalabs.github.io/AURA-Jewellery/](https://neuroautomatalabs.github.io/AURA-Jewellery/)
+## Deploy (Vercel)
 
-Pushes to `main` build a static export and deploy via GitHub Actions. In the repo settings, set **Pages → Source** to **GitHub Actions**.
+Production: [https://aura-jewellery-zeta.vercel.app/](https://aura-jewellery-zeta.vercel.app/)
 
-**Gold rates on Pages:** CJA rates are fetched at build time into `public/gold-rates.json` (also refreshed by a daily scheduled deploy). Local `npm run dev` still uses the live `/api/gold-rate` scrape.
+1. Import the GitHub repo in [Vercel](https://vercel.com).
+2. Framework preset: **Next.js** (defaults are fine).
+3. Add environment variables from `.env.example`.
+4. Deploy — do **not** set `GITHUB_PAGES`.
 
-Appointment booking on Pages opens the visitor’s email app (no SMTP server) and also appears in the owner dashboard on that same browser. Local/server deploys can still use the `/api/appointment` route.
+**Gold rates:** fetched live from CJA on each page load via `/api/gold-rate`. A Vercel cron also pings the route daily as a warm-up.
 
-**Owner dashboard on Pages:** [https://neuroautomatalabs.github.io/AURA-Jewellery/admin/](https://neuroautomatalabs.github.io/AURA-Jewellery/admin/) — password `aura-demo`. Changes stay in that browser (localStorage) so the client can try products, orders, appointments and custom requests. Razorpay checkout still needs a Node host.
+**Appointment & customize forms:** send email through GoDaddy SMTP when configured.
 
-## Appointment emails
+**Cart:** Razorpay checkout via `/api/checkout/*`.
 
-Copy `.env.example` → `.env.local`:
+**Admin:** `/admin` — requires `ADMIN_PASSWORD` and `ADMIN_SECRET` in Vercel env vars.
+
+> **Note:** Product/order data is stored in `data/aura-store.json`. On Vercel the filesystem is ephemeral — orders and admin edits may not persist across deploys until you move to Postgres + cloud uploads.
+
+## Environment variables
 
 ```env
 SMTP_HOST=smtpout.secureserver.net
@@ -39,49 +46,14 @@ SMTP_PORT=465
 SMTP_USER=info@aurajewellery.in
 SMTP_PASS=your-mailbox-password
 BUSINESS_EMAIL=info@aurajewellery.in
-```
 
-Without SMTP, the form runs in demo mode (logs to the server console).
-
-## Cart payments (Razorpay)
-
-Cart checkout uses **Razorpay** (UPI, cards, netbanking) — not WhatsApp.
-
-1. Create keys at [Razorpay Dashboard → API Keys](https://dashboard.razorpay.com/app/keys).
-2. Add to `.env.local`:
-
-```env
 NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret
-```
 
-3. Run `npm run dev`, add items to cart, pay with Razorpay test cards/UPI.
-
-**Note:** Payment APIs need a Node server (`npm run dev` / Vercel / similar). GitHub Pages static export removes `/api` routes, so live payments won’t work on Pages alone — deploy the Next app to a host that supports API routes.
-
-## Owner dashboard
-
-Local Node: [http://localhost:3000/admin](http://localhost:3000/admin)
-
-GitHub Pages preview: [https://neuroautomatalabs.github.io/AURA-Jewellery/admin/](https://neuroautomatalabs.github.io/AURA-Jewellery/admin/) — sign in with `aura-demo`. Sample orders and bookings are included so the client can click through the dashboard. Product edits on Pages show on Shop in the same browser.
-
-Local/server deploys persist to `data/aura-store.json`. Add to `.env.local`:
-
-```env
 ADMIN_PASSWORD=choose-a-strong-password
 ADMIN_SECRET=another-long-random-string
 ```
-
-From the dashboard the owner can:
-
-- See open orders, month revenue, live products, and new bookings
-- Filter, add, edit, publish, and delete products (those changes go live on Shop)
-- Track each order: paid → confirmed → in production → packed → shipped → delivered, plus cancel / refund / return
-- Add courier + tracking, internal notes, and a status timeline
-- Manage appointment requests and custom-made requests
-
-Orders are saved when a customer starts Razorpay checkout and marked **Paid** after verification. Product/order data is stored in `data/aura-store.json` on the server (keep a backup if you deploy to a host with an ephemeral filesystem).
 
 ## Routes
 

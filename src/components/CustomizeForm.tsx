@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { saveBrowserCustomRequest } from "@/lib/browser-store";
-import { isStaticPages } from "@/lib/static-pages";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -28,48 +26,24 @@ export function CustomizeForm() {
     const form = e.currentTarget;
 
     try {
-      const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
-      const res = await fetch(`${base}/api/customize`, {
+      const res = await fetch("/api/customize", {
         method: "POST",
         body: new FormData(form),
       });
-      const contentType = res.headers.get("content-type") || "";
-      if (contentType.includes("application/json")) {
-        const json = (await res.json()) as { message?: string; error?: string };
-        if (!res.ok) {
-          setStatus("error");
-          setMessage(json.error || "Something went wrong. Please try again.");
-          return;
-        }
-        setStatus("success");
-        form.reset();
-        setFileName("");
+      const json = (await res.json()) as { message?: string; error?: string };
+      if (!res.ok) {
+        setStatus("error");
+        setMessage(json.error || "Something went wrong. Please try again.");
         return;
       }
-    } catch {
-      // GitHub Pages has no API.
-    }
-
-    if (isStaticPages) {
-      const payload = new FormData(form);
-      const file = payload.get("reference");
-      await saveBrowserCustomRequest({
-        name: String(payload.get("name") ?? "").trim(),
-        email: String(payload.get("email") ?? "").trim(),
-        phone: String(payload.get("phone") ?? "").trim(),
-        product: String(payload.get("product") ?? "").trim(),
-        weight: String(payload.get("weight") ?? "").trim(),
-        notes: String(payload.get("notes") ?? "").trim(),
-        imageFile: file instanceof File && file.size > 0 ? file : null,
-      });
       setStatus("success");
+      setMessage(json.message || "Custom request received. We will get back to you shortly.");
       form.reset();
       setFileName("");
-      return;
+    } catch {
+      setStatus("error");
+      setMessage("Could not send the request. Please try again.");
     }
-
-    setStatus("error");
-    setMessage("Could not send the request. Please try again.");
   }
 
   if (status === "success") {
@@ -83,7 +57,7 @@ export function CustomizeForm() {
           Thank you
         </p>
         <p className="mt-3 text-sm leading-relaxed text-royal/80">
-          We received your custom request and will get back to you shortly.
+          {message || "We received your custom request and will get back to you shortly."}
         </p>
         <button
           type="button"

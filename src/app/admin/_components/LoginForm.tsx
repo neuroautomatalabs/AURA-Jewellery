@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clientLogin, clientSession } from "@/lib/admin-client";
-import { isStaticPages, PAGES_ADMIN_PASSWORD } from "@/lib/static-pages";
 import { useEffect } from "react";
 
 export function LoginForm({
@@ -16,7 +15,7 @@ export function LoginForm({
   const dest = search.get("next") || next;
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const [configured, setConfigured] = useState(isStaticPages);
+  const [configured, setConfigured] = useState(false);
 
   useEffect(() => {
     void clientSession().then((session) => {
@@ -53,16 +52,10 @@ export function LoginForm({
           placeholder="••••••••"
         />
       </label>
-      {isStaticPages && (
-        <p className="rounded-xl border border-gold/40 bg-gold-soft px-3 py-2.5 text-sm text-royal-deep">
-          Client preview password:{" "}
-          <code className="font-semibold">{PAGES_ADMIN_PASSWORD}</code>
-        </p>
-      )}
-      {!configured && !isStaticPages && (
+      {!configured && (
         <p className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-900">
-          Add <code className="font-semibold">ADMIN_PASSWORD</code> to{" "}
-          <code className="font-semibold">.env.local</code> first.
+          Add <code className="font-semibold">ADMIN_PASSWORD</code> to your
+          hosting environment variables first.
         </p>
       )}
       {error && (
@@ -75,7 +68,7 @@ export function LoginForm({
       )}
       <button
         type="submit"
-        disabled={pending || (!configured && !isStaticPages)}
+        disabled={pending || !configured}
         className="btn-primary w-full"
       >
         {pending ? "Signing in…" : "Sign in"}
