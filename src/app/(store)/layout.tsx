@@ -4,6 +4,9 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { fetchCjaRates } from "@/lib/cja-rates";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function StoreLayout({
   children,
 }: Readonly<{

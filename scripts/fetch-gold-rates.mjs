@@ -13,8 +13,9 @@ const LABEL_TO_KEY = {
 };
 
 function parseAmount(raw) {
-  const cleaned = String(raw).replace(/[^\d.]/g, "");
-  const value = Number(cleaned);
+  const match = String(raw).match(/(\d[\d,]*(?:\.\d+)?)/);
+  if (!match) return 0;
+  const value = Number(match[1].replace(/,/g, ""));
   return Number.isFinite(value) ? value : 0;
 }
 
@@ -23,11 +24,13 @@ function normalizeLabel(label) {
 }
 
 async function fetchCjaRates() {
-  const res = await fetch(CJA_URL, {
+  const res = await fetch(`${CJA_URL}?_=${Date.now()}`, {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; AuraJewellery/1.0; +https://github.com/neuroautomatalabs/AURA-Jewellery)",
+        "Mozilla/5.0 (compatible; AuraJewellery/1.0; +https://aurajewellery.in)",
       Accept: "text/html,application/xhtml+xml",
+      "Cache-Control": "no-cache, no-store",
+      Pragma: "no-cache",
     },
     cache: "no-store",
   });

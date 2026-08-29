@@ -33,12 +33,16 @@ function FallbackBar({ message }: { message: string }) {
   );
 }
 
+function hasPrimaryRates(rates: CjaRates | null) {
+  return rates != null && rates.gold22 != null;
+}
+
 async function fetchLiveRates(): Promise<CjaRates> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 12_000);
 
   try {
-    const live = await fetch("/api/gold-rate", {
+    const live = await fetch(`/api/gold-rate?_=${Date.now()}`, {
       cache: "no-store",
       signal: controller.signal,
     });
@@ -62,9 +66,7 @@ export function GoldRateBar({
   initialRates?: CjaRates | null;
 }) {
   const [rates, setRates] = useState<CjaRates | null>(initialRates);
-  const [failed, setFailed] = useState(
-    initialRates != null && initialRates.gold18 == null,
-  );
+  const [failed, setFailed] = useState(!hasPrimaryRates(initialRates));
 
   useEffect(() => {
     let cancelled = false;
@@ -74,10 +76,10 @@ export function GoldRateBar({
         const data = await fetchLiveRates();
         if (!cancelled) {
           setRates(data);
-          setFailed(data.gold18 == null);
+          setFailed(!hasPrimaryRates(data));
         }
       } catch {
-        if (!cancelled && initialRates == null) {
+        if (!cancelled && !hasPrimaryRates(initialRates)) {
           setFailed(true);
         }
       }
@@ -88,9 +90,12 @@ export function GoldRateBar({
     const onFocus = () => {
       void load();
     };
+    const interval = window.setInterval(load, 30 * 60 * 1000);
+
     window.addEventListener("focus", onFocus);
     return () => {
       cancelled = true;
+      window.clearInterval(interval);
       window.removeEventListener("focus", onFocus);
     };
   }, [initialRates]);
@@ -99,7 +104,7 @@ export function GoldRateBar({
     return <FallbackBar message="Loading today's CJA gold rates…" />;
   }
 
-  if (!rates || rates.gold18 == null) {
+  if (!rates || rates.gold22 == null) {
     return (
       <FallbackBar message="Hallmarked gold & certified diamonds · Free styling consultation" />
     );
@@ -111,7 +116,10 @@ export function GoldRateBar({
         <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-bright/90 sm:inline">
           Today&apos;s CJA rate
         </span>
-        {rates.gold18 != null && <RateChip label="18K" amount={rates.gold18} />}
+        <RateChip label="22K" amount={rates.gold22} />
+        {rates.gold18 != null && (
+          <RateChip label="18K" amount={rates.gold18} />
+        )}
         {rates.silver != null && rates.silver > 0 && (
           <span className="hidden sm:inline">
             <RateChip

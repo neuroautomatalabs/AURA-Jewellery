@@ -30,8 +30,10 @@ const LABEL_TO_KEY: Record<string, keyof Pick<
 };
 
 function parseAmount(raw: string): number {
-  const cleaned = raw.replace(/[^\d.]/g, "");
-  const value = Number(cleaned);
+  // CJA prices look like "↓ ₹ 14,505 (-295)" — take the first number group only.
+  const match = raw.match(/(\d[\d,]*(?:\.\d+)?)/);
+  if (!match) return 0;
+  const value = Number(match[1].replace(/,/g, ""));
   return Number.isFinite(value) ? value : 0;
 }
 
@@ -41,13 +43,16 @@ function normalizeLabel(label: string): string {
 
 /** Scrape live CJA rates from the association homepage. */
 export async function fetchCjaRates(): Promise<CjaRates> {
-  const res = await fetch(CJA_URL, {
+  const res = await fetch(`${CJA_URL}?_=${Date.now()}`, {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; AuraJewellery/1.0; +https://localhost)",
+        "Mozilla/5.0 (compatible; AuraJewellery/1.0; +https://aurajewellery.in)",
       Accept: "text/html,application/xhtml+xml",
+      "Cache-Control": "no-cache, no-store",
+      Pragma: "no-cache",
     },
     cache: "no-store",
+    next: { revalidate: 0 },
   });
 
   if (!res.ok) {
