@@ -5,14 +5,22 @@ const STORE_ROW_ID = "main";
 let pool: Pool | null = null;
 let schemaReady: Promise<void> | null = null;
 
+export function databaseUrl() {
+  return (
+    process.env.DATABASE_URL?.trim() ||
+    process.env.POSTGRES_URL?.trim() ||
+    ""
+  );
+}
+
 export function hasDatabase() {
-  return Boolean(process.env.DATABASE_URL?.trim());
+  return Boolean(databaseUrl());
 }
 
 function getPool() {
-  const url = process.env.DATABASE_URL?.trim();
+  const url = databaseUrl();
   if (!url) {
-    throw new Error("DATABASE_URL is not configured.");
+    throw new Error("DATABASE_URL or POSTGRES_URL is not configured.");
   }
   if (!pool) {
     neonConfig.fetchConnectionCache = true;
