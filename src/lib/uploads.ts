@@ -4,8 +4,12 @@ import path from "path";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
-function isVercelRuntime() {
-  return process.env.VERCEL === "1";
+function isHostedRuntime() {
+  return (
+    process.env.VERCEL === "1" ||
+    process.env.NODE_ENV === "production" ||
+    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME)
+  );
 }
 
 function blobToken() {
@@ -16,8 +20,12 @@ function blobToken() {
   );
 }
 
-function hasBlobStorage() {
-  return Boolean(blobToken());
+function blobStoreId() {
+  return process.env.BLOB_STORE_ID?.trim() || "";
+}
+
+function canUseBlob() {
+  return Boolean(blobToken() || blobStoreId() || isHostedRuntime());
 }
 
 function extensionFor(file: File) {
@@ -48,21 +56,25 @@ export async function saveUpload(file: File, prefix = "file") {
     .toString(36)
     .slice(2, 7)}${ext}`;
 
-  const token = blobToken();
-  if (token) {
-    const blob = await put(name, bytes, {
-      access: "public",
-      contentType: file.type || contentTypeFor(ext),
-      addRandomSuffix: false,
-      token,
-    });
-    return blob.url;
-  }
-
-  if (isVercelRuntime()) {
-    throw new Error(
-      "Image upload is not configured. Connect Vercel Blob and redeploy so BLOB_READ_WRITE_TOKEN is set.",
-    );
+  if (canUseBlob()) {
+    const token = blobToken();
+    const storeId = blobStoreId();
+    try {
+      const blob = await put(name, bytes, {
+        access: "public",
+        contentType: file.type || contentTypeFor(ext),
+        addRandomSuffix: true,
+        ...(token ? { token } : {}),
+        ...(storeId ? { storeId } : {}),
+      });
+      return blob.url;
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Blob upload failed.";
+      throw new Error(
+        `Could not upload image to Vercel Blob. ${message} Check Storage → Blob is linked and redeploy.`,
+      );
+    }
   }
 
   await mkdir(UPLOAD_DIR, { recursive: true });
