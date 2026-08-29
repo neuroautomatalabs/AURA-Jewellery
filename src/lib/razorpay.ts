@@ -18,3 +18,14 @@ export function getRazorpayKeyId() {
     ""
   );
 }
+
+export function formatRazorpayError(err: unknown): string {
+  if (err && typeof err === "object" && "error" in err) {
+    const nested = (err as { error?: { description?: string; reason?: string } })
+      .error;
+    if (nested?.description) return nested.description;
+    if (nested?.reason) return nested.reason;
+  }
+  if (err instanceof Error && err.message) return err.message;
+  return "Payment provider error.";
+}

@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { buildCheckoutLines, validShipping } from "@/lib/checkout";
 import type { CheckoutShipping } from "@/lib/checkout";
-import { getRazorpay, getRazorpayKeyId } from "@/lib/razorpay";
+import {
+  formatRazorpayError,
+  getRazorpay,
+  getRazorpayKeyId,
+} from "@/lib/razorpay";
 import { nextOrderId, updateStore } from "@/lib/store";
 import type { CartItem } from "@/lib/types";
 
@@ -28,7 +32,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Payment is not configured yet. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env.local.",
+          "Payment is not configured. Add NEXT_PUBLIC_RAZORPAY_KEY_ID, RAZORPAY_KEY_ID, and RAZORPAY_KEY_SECRET in Vercel env vars, then redeploy.",
       },
       { status: 503 },
     );
@@ -81,33 +85,49 @@ export async function POST(request: Request) {
     );
   }
 
-  const local = await updateStore((store) => {
-    const id = nextOrderId(store);
-    const stamp = new Date().toISOString();
-    const order = {
-      id,
-      status: "pending_payment" as const,
-      customer: { name, email, phone },
-      shipping,
-      lines,
-      amountInr,
-      currency: "INR",
-      customerNote: body.note?.trim() || undefined,
-      timeline: [
-        { status: "pending_payment" as const, at: stamp, note: "Checkout started" },
-      ],
-      createdAt: stamp,
-      updatedAt: stamp,
-    };
-    store.orders.unshift(order);
-    return order;
-  });
+  let local;
+  try {
+    local = await updateStore((store) => {
+      const id = nextOrderId(store);
+      const stamp = new Date().toISOString();
+      const order = {
+        id,
+        status: "pending_payment" as const,
+        customer: { name, email, phone },
+        shipping,
+        lines,
+        amountInr,
+        currency: "INR",
+        customerNote: body.note?.trim() || undefined,
+        timeline: [
+          {
+            status: "pending_payment" as const,
+            at: stamp,
+            note: "Checkout started",
+          },
+        ],
+        createdAt: stamp,
+        updatedAt: stamp,
+      };
+      store.orders.unshift(order);
+      return order;
+    });
+  } catch (err) {
+    console.error("Checkout store save failed:", err);
+    return NextResponse.json(
+      {
+        error:
+          "Could not save your order. Please try again in a moment.",
+      },
+      { status: 500 },
+    );
+  }
 
   try {
     const order = await razorpay.orders.create({
       amount: amountPaise,
       currency: "INR",
-      receipt: local.id.slice(0, 40),
+      receipt: local.id.replace(/[^a-zA-Z0-9]/g, "").slice(0, 40),
       notes: {
         aura_order_id: local.id,
         customer_name: name,
@@ -141,20 +161,28 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error("Razorpay order create failed:", err);
-    await updateStore((store) => {
-      const row = store.orders.find((o) => o.id === local.id);
-      if (row && row.status === "pending_payment") {
-        row.status = "cancelled";
-        row.timeline.push({
-          status: "cancelled",
-          at: new Date().toISOString(),
-          note: "Payment session failed to start",
-        });
-        row.updatedAt = new Date().toISOString();
-      }
-    });
+    try {
+      await updateStore((store) => {
+        const row = store.orders.find((o) => o.id === local.id);
+        if (row && row.status === "pending_payment") {
+          row.status = "cancelled";
+          row.timeline.push({
+            status: "cancelled",
+            at: new Date().toISOString(),
+            note: "Payment session failed to start",
+          });
+          row.updatedAt = new Date().toISOString();
+        }
+      });
+    } catch (cancelErr) {
+      console.error("Could not cancel pending order after Razorpay failure:", cancelErr);
+    }
+
+    const detail = formatRazorpayError(err);
     return NextResponse.json(
-      { error: "Could not start payment. Please try again." },
+      {
+        error: `Could not start payment. ${detail} Check Razorpay keys in Vercel env vars.`,
+      },
       { status: 500 },
     );
   }
