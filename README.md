@@ -19,28 +19,46 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Copy `.env.example` → `.env.local` and fill in SMTP, Razorpay, and admin credentials.
 
+Without `DATABASE_URL`, the app uses `data/aura-store.json` locally. Without `BLOB_READ_WRITE_TOKEN`, uploads go to `public/uploads/`.
+
 ## Deploy (Vercel)
 
 Production: [https://aura-jewellery-zeta.vercel.app/](https://aura-jewellery-zeta.vercel.app/)
 
-1. Import the GitHub repo in [Vercel](https://vercel.com).
-2. Framework preset: **Next.js** (defaults are fine).
-3. Add environment variables from `.env.example`.
-4. Deploy — do **not** set `GITHUB_PAGES`.
+### 1. Connect Postgres (orders, products, admin data)
 
-**Gold rates:** fetched live from CJA on each page load via `/api/gold-rate`. A Vercel cron also pings the route daily as a warm-up.
+1. In [Vercel](https://vercel.com) → your project → **Storage** → **Create Database** → **Postgres** (or connect [Neon](https://neon.tech)).
+2. Link it to the project — Vercel adds `DATABASE_URL` automatically.
+3. Redeploy. The app creates the `aura_store` table on first request.
 
-**Appointment & customize forms:** send email through GoDaddy SMTP when configured.
+Optional manual init:
+
+```bash
+DATABASE_URL=postgresql://... npm run db:init
+```
+
+### 2. Connect Blob (product & custom-request photos)
+
+1. Vercel project → **Storage** → **Create Store** → **Blob**.
+2. Link to the project — Vercel adds `BLOB_READ_WRITE_TOKEN`.
+3. Redeploy.
+
+### 3. Other environment variables
+
+Add SMTP, Razorpay, and admin vars (see `.env.example`). Do **not** set `GITHUB_PAGES`.
+
+**Gold rates:** live from CJA via `/api/gold-rate`.
 
 **Cart:** Razorpay checkout via `/api/checkout/*`.
 
-**Admin:** `/admin` — requires `ADMIN_PASSWORD` and `ADMIN_SECRET` in Vercel env vars.
-
-> **Note:** Product/order data is stored in `data/aura-store.json`. On Vercel the filesystem is ephemeral — orders and admin edits may not persist across deploys until you move to Postgres + cloud uploads.
+**Admin:** `/admin` with `ADMIN_PASSWORD` + `ADMIN_SECRET`.
 
 ## Environment variables
 
 ```env
+DATABASE_URL=postgresql://...
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
+
 SMTP_HOST=smtpout.secureserver.net
 SMTP_PORT=465
 SMTP_USER=info@aurajewellery.in

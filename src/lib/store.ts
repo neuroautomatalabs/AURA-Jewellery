@@ -6,6 +6,8 @@ import type {
   StoreCustomRequest,
   StoreOrder,
 } from "@/lib/commerce";
+import { hasDatabase } from "@/lib/db";
+import { readStorePg, updateStorePg } from "@/lib/store-pg";
 import { parseStore, emptyStore } from "@/lib/store-core";
 
 export {
@@ -17,7 +19,7 @@ export {
 
 const STORE_PATH = path.join(process.cwd(), "data", "aura-store.json");
 
-let queue: Promise<unknown> = Promise.resolve();
+let fileQueue: Promise<unknown> = Promise.resolve();
 
 async function readStoreFile(): Promise<AuraStore> {
   try {
@@ -33,24 +35,32 @@ async function writeStoreFile(store: AuraStore) {
   await writeFile(STORE_PATH, JSON.stringify(store, null, 2), "utf8");
 }
 
+async function updateStoreFile<T>(
+  mutator: (store: AuraStore) => T | Promise<T>,
+): Promise<T> {
+  const run = fileQueue.then(async () => {
+    const store = await readStoreFile();
+    const result = await mutator(store);
+    await writeStoreFile(store);
+    return result;
+  });
+  fileQueue = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
 export async function readStore() {
+  if (hasDatabase()) return readStorePg();
   return readStoreFile();
 }
 
 export async function updateStore<T>(
   mutator: (store: AuraStore) => T | Promise<T>,
 ): Promise<T> {
-  const run = queue.then(async () => {
-    const store = await readStoreFile();
-    const result = await mutator(store);
-    await writeStoreFile(store);
-    return result;
-  });
-  queue = run.then(
-    () => undefined,
-    () => undefined,
-  );
-  return run;
+  if (hasDatabase()) return updateStorePg(mutator);
+  return updateStoreFile(mutator);
 }
 
 export async function getOrderByRazorpayId(razorpayOrderId: string) {

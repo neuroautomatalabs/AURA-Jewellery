@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "fetch-gold-rates": "node scripts/fetch-gold-rates.mjs",
+    "db:init": "node scripts/init-db.mjs",
     "start": "next start --hostname 0.0.0.0 --port ${PORT:-3000}",
     "lint": "eslint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/blob": "^2.8.0",
     "next": "16.2.11",
     "nodemailer": "^9.0.3",
     "razorpay": "^2.9.8",
