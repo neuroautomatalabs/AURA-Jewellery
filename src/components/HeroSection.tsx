@@ -45,7 +45,7 @@ export function HeroSection() {
       </div>
 
       <div
-        className="relative mx-auto flex min-h-[82dvh] max-w-7xl flex-col justify-end px-4 pb-16 pt-24 sm:px-6 sm:pb-24 lg:justify-center lg:pb-20"
+        className="site-container relative flex min-h-[82dvh] flex-col justify-end pb-16 pt-24 sm:pb-24 lg:justify-center lg:pb-20"
         style={{ transform: `translate3d(0, ${offset * -0.12}px, 0)` }}
       >
         <h1 className="animate-rise font-display text-5xl tracking-wide sm:text-6xl md:text-7xl lg:text-[5.25rem]">

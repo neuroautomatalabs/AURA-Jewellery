@@ -33,7 +33,6 @@ export const products: Product[] = [
       "forward-helix",
       "antitragus",
       "nostril",
-      "high-nostril",
     ],
     image:
       "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800&q=85",
@@ -55,8 +54,6 @@ export const products: Product[] = [
       "hidden-rook",
       "antitragus",
       "nostril",
-      "high-nostril",
-      "nose-tip",
     ],
     image:
       "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=85",
@@ -113,7 +110,7 @@ export const products: Product[] = [
     karat: "18k",
     price: 3890,
     currency: "INR",
-    piercings: ["helix", "aura-helix", "low-helix", "forward-helix", "bridge"],
+    piercings: ["helix", "aura-helix", "low-helix", "forward-helix"],
     image:
       "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&q=85",
     style: "stud",
@@ -148,8 +145,6 @@ export const products: Product[] = [
       "tragus",
       "conch",
       "nostril",
-      "high-nostril",
-      "nose-tip",
     ],
     image:
       "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=800&q=85",
@@ -295,7 +290,6 @@ export const products: Product[] = [
       "tragus",
       "hidden-rook",
       "nostril",
-      "high-nostril",
     ],
     image:
       "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=800&q=85",
@@ -324,7 +318,7 @@ export const products: Product[] = [
     karat: "18k",
     price: 2890,
     currency: "INR",
-    piercings: ["nostril", "high-nostril"],
+    piercings: ["nostril"],
     image:
       "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=800&q=85",
     style: "stud",
@@ -351,7 +345,7 @@ export const products: Product[] = [
     metal: "diamond",
     price: 14200,
     currency: "INR",
-    piercings: ["nostril", "high-nostril", "nose-tip"],
+    piercings: ["nostril"],
     image:
       "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=800&q=85",
     images: [
@@ -380,7 +374,7 @@ export const products: Product[] = [
     karat: "18k",
     price: 5200,
     currency: "INR",
-    piercings: ["septum", "nasallang"],
+    piercings: ["septum"],
     image:
       "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&q=85",
     style: "hoop",
@@ -394,12 +388,12 @@ export const products: Product[] = [
     karat: "18k",
     price: 4100,
     currency: "INR",
-    piercings: ["bridge", "nasallang"],
+    piercings: ["septum"],
     image:
       "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&q=85",
     style: "stud",
     unit: "single",
-    description: "Straight bar for bridge and nasallang placements.",
+    description: "Straight bar for septum styling.",
   },
 ];
 

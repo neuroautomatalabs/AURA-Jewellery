@@ -112,7 +112,7 @@ export function GoldRateBar({
 
   return (
     <div className="bg-royal-deep px-3 py-2.5 text-center text-[11px] font-medium tracking-wide text-white sm:text-xs">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-5">
+      <div className="site-container flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-5">
         <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-bright/90 sm:inline">
           Today&apos;s CJA rate
         </span>

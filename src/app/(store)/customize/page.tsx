@@ -15,7 +15,7 @@ export default function CustomizePage() {
           className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-gold/20 blur-3xl"
           aria-hidden
         />
-        <div className="relative mx-auto max-w-xl px-4 py-12 text-center sm:px-6 sm:py-16">
+        <div className="site-gutter relative mx-auto max-w-xl py-12 text-center sm:py-16">
           <p className="eyebrow text-gold-bright">Custom made</p>
           <h1 className="font-display mt-3 text-4xl tracking-wide sm:text-5xl">
             Customize
@@ -27,7 +27,7 @@ export default function CustomizePage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="site-gutter mx-auto max-w-xl py-10 sm:py-14">
         <div className="surface-card p-5 sm:p-8">
           <CustomizeForm />
         </div>

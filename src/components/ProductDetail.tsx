@@ -102,7 +102,7 @@ export function ProductDetail({
       : "Diamond";
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+    <div className="site-container py-8 sm:py-12">
       <nav className="mb-7 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.14em] text-ink-muted">
         {preview ? (
           <span>Home</span>

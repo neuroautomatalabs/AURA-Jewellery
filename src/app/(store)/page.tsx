@@ -21,7 +21,7 @@ export default async function HomePage() {
       <HeroSection />
 
       <section className="border-b border-line bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-line sm:grid-cols-4">
+        <div className="site-container grid grid-cols-2 gap-px bg-line sm:grid-cols-4">
           {trust.map((item, i) => (
             <Reveal key={item.title} delay={i * 80}>
               <div className="bg-white px-4 py-6 text-center transition hover:bg-royal-soft/40 sm:py-7">
@@ -33,12 +33,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-surface px-4 py-14 sm:px-6 sm:py-20">
+      <section className="site-gutter relative overflow-hidden bg-surface py-14 sm:py-20">
         <div
           className="pointer-events-none absolute -right-24 top-10 h-64 w-64 rounded-full bg-gold/10 blur-3xl"
           aria-hidden
         />
-        <div className="relative mx-auto max-w-7xl">
+        <div className="relative mx-auto max-w-[var(--site-max)]">
           <Reveal>
             <h2 className="text-center font-display text-4xl tracking-wide text-royal sm:text-5xl">
               Explore
@@ -155,8 +155,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-14 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-7xl">
+      <section className="site-gutter bg-white py-14 sm:py-20">
+        <div className="mx-auto max-w-[var(--site-max)]">
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -179,12 +179,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-royal px-4 py-14 sm:px-6 sm:py-16">
+      <section className="site-gutter relative overflow-hidden bg-royal py-14 sm:py-16">
         <div
           className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-gold/15 blur-3xl"
           aria-hidden
         />
-        <div className="relative mx-auto max-w-7xl">
+        <div className="relative mx-auto max-w-[var(--site-max)]">
           <Reveal>
             <h2 className="text-center font-display text-3xl text-white sm:text-4xl">
               Starts from
@@ -233,7 +233,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-t border-line bg-gold-soft px-4 py-16 sm:px-6 sm:py-20">
+      <section className="site-gutter relative overflow-hidden border-t border-line bg-gold-soft py-16 sm:py-20">
         <div
           className="pointer-events-none absolute right-0 top-0 h-72 w-72 rounded-full bg-gold/20 blur-3xl"
           aria-hidden
