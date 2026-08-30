@@ -180,7 +180,7 @@ export function CartView() {
 
   if (count === 0) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-20 text-center sm:px-6">
+      <div className="site-gutter mx-auto max-w-2xl py-20 text-center">
         <p className="eyebrow text-gold">Cart</p>
         <h1 className="font-display mt-3 text-4xl text-royal">
           Your cart is empty
@@ -203,7 +203,7 @@ export function CartView() {
   return (
     <div className="bg-surface">
       <div className="border-b border-line bg-white">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-end justify-between gap-3 px-4 py-10 sm:px-6 sm:py-12">
+        <div className="site-gutter mx-auto flex max-w-4xl flex-wrap items-end justify-between gap-3 py-10 sm:py-12">
           <div>
             <p className="eyebrow text-gold">Cart</p>
             <h1 className="font-display mt-2 text-3xl text-royal sm:text-4xl">
@@ -220,7 +220,7 @@ export function CartView() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="site-gutter mx-auto max-w-4xl py-8 sm:py-10">
       <ul className="space-y-4">
         {lines.map(({ item, product }) => (
           <li

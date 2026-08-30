@@ -14,12 +14,8 @@ const HOTSPOTS: {
   cx: number;
   cy: number;
 }[] = [
-  { id: "bridge", cx: 140, cy: 78 },
-  { id: "high-nostril", cx: 108, cy: 148 },
   { id: "nostril", cx: 100, cy: 188 },
   { id: "septum", cx: 140, cy: 205 },
-  { id: "nose-tip", cx: 140, cy: 228 },
-  { id: "nasallang", cx: 180, cy: 178 },
 ];
 
 export function NoseMap({ selectedId, onSelect }: Props) {

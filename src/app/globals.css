@@ -24,6 +24,21 @@
   --shadow-soft: 0 1px 2px rgb(11 31 92 / 4%), 0 8px 24px rgb(11 31 92 / 6%);
   --shadow-lift: 0 4px 8px rgb(11 31 92 / 6%), 0 16px 40px rgb(11 31 92 / 10%);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Side spacing — raise gutter / lower max for a more zoomed-out layout */
+  --site-max: 72rem;
+  --site-gutter: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --site-gutter: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --site-gutter: 4rem;
+  }
 }
 
 @theme inline {
@@ -134,15 +149,26 @@ textarea {
   text-transform: uppercase;
 }
 
+.site-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--site-max);
+  padding-inline: var(--site-gutter);
+}
+
+.site-gutter {
+  padding-inline: var(--site-gutter);
+}
+
 .page-shell {
   margin-inline: auto;
-  max-width: 72rem;
-  padding: 2.5rem 1rem 3.5rem;
+  max-width: var(--site-max);
+  padding: 2.5rem var(--site-gutter) 3.5rem;
 }
 
 @media (min-width: 640px) {
   .page-shell {
-    padding: 3.5rem 1.5rem 4.5rem;
+    padding-block: 3.5rem 4.5rem;
   }
 }
 

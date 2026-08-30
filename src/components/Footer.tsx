@@ -1,19 +1,22 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-royal-deep text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4 md:gap-8">
+    <footer className="bg-royal text-white">
+      <div className="site-container grid gap-10 py-16 md:grid-cols-4 md:gap-8">
         <div className="md:pr-4">
-          <Link href="/" className="group inline-block">
-            <p className="font-display text-3xl tracking-wide transition group-hover:text-gold-bright">
-              Aura
-            </p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.35em] text-gold-bright">
-              Jewellery
-            </p>
+          <Link href="/" className="group block w-fit transition hover:opacity-90">
+            <Image
+              src="/aura-logo.png"
+              alt="Aura Jewellery"
+              width={1024}
+              height={327}
+              className="block h-auto w-48 max-w-full"
+              priority
+            />
           </Link>
-          <p className="mt-5 text-sm leading-relaxed text-white/65">
+          <p className="mt-4 text-sm leading-relaxed text-white/65">
             Handcrafted gold &amp; diamond piercing jewellery — hallmarked,
             certified, and styled for every placement.
           </p>
@@ -116,7 +119,7 @@ export function Footer() {
           </a>
         </div>
       </div>
-      <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-white/40">
+      <div className="site-gutter border-t border-white/10 py-5 text-center text-xs text-white/40">
         © {new Date().getFullYear()} Aura Jewellery. All rights reserved.
       </div>
     </footer>

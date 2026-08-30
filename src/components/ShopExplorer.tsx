@@ -37,7 +37,7 @@ export function ShopExplorer({
   initialPiercing = null,
   mode = "catalog",
   title = "Gold & Diamond",
-  subtitle = "One collection — filter by metal and category.",
+  subtitle = "",
 }: Props) {
   const liveProducts = useLiveCatalog(products);
   const [metal, setMetal] = useState<MetalFilter>(initialMetal);
@@ -79,7 +79,7 @@ export function ShopExplorer({
             aria-hidden
           />
         )}
-        <div className="relative mx-auto max-w-7xl px-4 py-11 sm:px-6 sm:py-14">
+        <div className="site-container relative py-11 sm:py-14">
           <p
             className={`eyebrow ${
               mode === "ear-map" ? "text-gold-bright" : "text-gold"
@@ -94,13 +94,15 @@ export function ShopExplorer({
           >
             {title}
           </h1>
-          <p
-            className={`mt-3 max-w-2xl text-sm leading-relaxed sm:text-base ${
-              mode === "ear-map" ? "text-white/75" : "text-ink-muted"
-            }`}
-          >
-            {subtitle}
-          </p>
+          {subtitle ? (
+            <p
+              className={`mt-3 max-w-2xl text-sm leading-relaxed sm:text-base ${
+                mode === "ear-map" ? "text-white/75" : "text-ink-muted"
+              }`}
+            >
+              {subtitle}
+            </p>
+          ) : null}
 
           {mode === "ear-map" && (
             <div className="mt-7 inline-flex rounded-full bg-white/10 p-1 ring-1 ring-white/20 backdrop-blur-sm">
@@ -141,7 +143,7 @@ export function ShopExplorer({
         }
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <div className="site-container py-6 sm:py-8">
         {mode === "ear-map" ? (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,380px)_1fr] xl:grid-cols-[minmax(0,420px)_1fr]">
             <div className="lg:sticky lg:top-44 lg:self-start">

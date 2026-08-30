@@ -17,7 +17,7 @@ export function CheckoutSuccess() {
 
   return (
     <div className="bg-surface">
-      <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6 sm:py-24">
+      <div className="site-gutter mx-auto max-w-lg py-16 text-center sm:py-24">
         <div className="surface-card px-6 py-12 sm:px-10">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-royal-soft">
             <svg

@@ -24,7 +24,7 @@ export default async function GuideDetailPage({ params }: Props) {
   return (
     <article className="bg-surface">
       <div className="border-b border-line bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
+        <div className="site-gutter mx-auto max-w-2xl py-10 sm:py-14">
           <Link
             href="/guides"
             className="text-xs font-bold uppercase tracking-[0.18em] text-royal transition hover:text-royal-mid"
@@ -43,7 +43,7 @@ export default async function GuideDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-12">
+      <div className="site-gutter mx-auto max-w-2xl py-10 sm:py-12">
         <ol className="space-y-0 overflow-hidden rounded-2xl border border-line bg-white shadow-[var(--shadow-soft)]">
           {guide.content.map((item, i) => (
             <li

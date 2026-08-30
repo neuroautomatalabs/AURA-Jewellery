@@ -28,7 +28,7 @@ export function ProductFilters({
 }: Props) {
   return (
     <div className="sticky top-[6.75rem] z-30 border-b border-line bg-white/90 shadow-[0_4px_20px_rgb(11_31_92/0.06)] backdrop-blur-lg sm:top-[6.5rem]">
-      <div className="mx-auto max-w-7xl space-y-3 px-4 py-3.5 sm:px-6">
+      <div className="site-container space-y-3 py-3.5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
             Metal

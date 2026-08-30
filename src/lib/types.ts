@@ -17,13 +17,7 @@ export type EarPiercingId =
   | "hidden-rook"
   | "rook";
 
-export type NosePiercingId =
-  | "nostril"
-  | "high-nostril"
-  | "septum"
-  | "bridge"
-  | "nose-tip"
-  | "nasallang";
+export type NosePiercingId = "nostril" | "septum";
 
 export type PiercingId = EarPiercingId | NosePiercingId;
 

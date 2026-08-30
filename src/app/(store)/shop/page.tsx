@@ -15,7 +15,6 @@ export default async function ShopPage() {
       products={products}
       mode="catalog"
       title="Gold & Diamond"
-      subtitle="One collection for every metal. Use the filters below — Gold, Diamond, Ear and Nose stay visible."
     />
   );
 }

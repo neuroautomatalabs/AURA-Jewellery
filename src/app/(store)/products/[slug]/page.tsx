@@ -40,7 +40,7 @@ export default async function ProductPage({ params }: Props) {
 
       {related.length > 0 && (
         <section className="border-t border-line bg-surface">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="site-container py-12 sm:py-16">
             <p className="eyebrow text-gold">Continue browsing</p>
             <h2 className="font-display mt-2 text-2xl text-royal sm:text-3xl">
               You may also like

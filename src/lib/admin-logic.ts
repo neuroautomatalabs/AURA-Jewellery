@@ -24,11 +24,7 @@ const PIERCING_IDS = new Set<string>([
   "hidden-rook",
   "rook",
   "nostril",
-  "high-nostril",
   "septum",
-  "bridge",
-  "nose-tip",
-  "nasallang",
 ]);
 
 export function text(form: FormData, key: string) {

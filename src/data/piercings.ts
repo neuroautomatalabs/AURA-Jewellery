@@ -175,28 +175,6 @@ export const earPiercings: EarPiercingSpot[] = [
 
 export const nosePiercings: NosePiercingSpot[] = [
   {
-    id: "bridge",
-    name: "Bridge",
-    shortName: "Bridge",
-    region: "nose",
-    x: 50,
-    y: 22,
-    healingWeeks: "8–12 weeks",
-    description:
-      "Across the upper bridge — styled with a slim bar or matching mini studs.",
-  },
-  {
-    id: "high-nostril",
-    name: "High Nostril",
-    shortName: "High Nostril",
-    region: "nose",
-    x: 38,
-    y: 48,
-    healingWeeks: "4–6 months",
-    description:
-      "Higher on the nostril wall — perfect for a petite gold or diamond pin.",
-  },
-  {
     id: "nostril",
     name: "Nostril",
     shortName: "Nostril",
@@ -217,28 +195,6 @@ export const nosePiercings: NosePiercingSpot[] = [
     healingWeeks: "6–8 weeks",
     description:
       "Through the soft tissue of the septum — rings and clickers sit beautifully.",
-  },
-  {
-    id: "nose-tip",
-    name: "Nose Tip",
-    shortName: "Tip",
-    region: "nose",
-    x: 50,
-    y: 78,
-    healingWeeks: "4–6 months",
-    description:
-      "Centered on the tip — a bold statement with a single brilliant stud.",
-  },
-  {
-    id: "nasallang",
-    name: "Nasallang",
-    shortName: "Nasallang",
-    region: "nose",
-    x: 64,
-    y: 58,
-    healingWeeks: "4–6 months",
-    description:
-      "Through both nostrils and the septum — dramatic, best with a straight bar.",
   },
 ];
 

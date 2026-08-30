@@ -12,7 +12,7 @@ export default function GuidesPage() {
   return (
     <div className="bg-surface">
       <div className="border-b border-line bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="site-gutter mx-auto max-w-6xl py-12 sm:py-16">
           <p className="eyebrow text-gold">Guides</p>
           <h1 className="font-display mt-3 text-4xl tracking-wide text-royal sm:text-5xl">
             Piercing guides
@@ -23,7 +23,7 @@ export default function GuidesPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="site-gutter mx-auto max-w-6xl py-10 sm:py-14">
         <div className="grid gap-5 sm:grid-cols-2">
           {guides.map((guide) => (
             <Link

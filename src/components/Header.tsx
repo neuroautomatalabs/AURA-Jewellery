@@ -38,7 +38,7 @@ export function Header({ children }: { children?: ReactNode }) {
       )}
 
       <header className="border-b border-white/10 bg-royal text-white shadow-[0_8px_28px_rgb(7_20_64/0.28)]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
+        <div className="site-container flex items-center justify-between gap-3 py-3.5">
           <Link href="/" className="group flex h-10 shrink-0 items-center overflow-hidden sm:h-12">
             <img
               src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/Logo-01.png`}
@@ -146,7 +146,7 @@ export function Header({ children }: { children?: ReactNode }) {
         {open && (
           <nav
             id="mobile-nav"
-            className="border-t border-white/10 bg-royal-deep px-4 py-3 md:hidden"
+            className="site-gutter border-t border-white/10 bg-royal-deep py-3 md:hidden"
           >
             <ul className="space-y-0.5">
               {links.map((link) => {
