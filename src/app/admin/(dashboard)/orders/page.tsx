@@ -44,8 +44,9 @@ export default function AdminOrdersPage() {
     <div>
       <p className="eyebrow text-gold">Fulfillment</p>
       <h1 className="font-display mt-1 text-3xl text-royal">Orders</h1>
-      <p className="mt-1 text-sm text-ink-muted">
-        Paid → confirmed → production → packed → shipped → delivered. Returns and refunds sit at the end of the same trail.
+      <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+        Paid → confirmed → production → packed → shipped → delivered. Returns
+        and refunds sit at the end of the same trail.
       </p>
 
       <form

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { formatRateInr, type CjaRates } from "@/lib/cja-rates";
+import { formatRateInr } from "@/lib/cja-rates";
+import { useGoldRates } from "@/components/GoldRatesProvider";
 
 function RateChip({
   label,
@@ -33,72 +33,8 @@ function FallbackBar({ message }: { message: string }) {
   );
 }
 
-function hasPrimaryRates(rates: CjaRates | null) {
-  return rates != null && rates.gold22 != null;
-}
-
-async function fetchLiveRates(): Promise<CjaRates> {
-  const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 12_000);
-
-  try {
-    const live = await fetch(`/api/gold-rate?_=${Date.now()}`, {
-      cache: "no-store",
-      signal: controller.signal,
-    });
-    if (live.ok) {
-      return (await live.json()) as CjaRates;
-    }
-  } finally {
-    window.clearTimeout(timeout);
-  }
-
-  const baked = await fetch("/gold-rates.json", { cache: "no-store" });
-  if (!baked.ok) {
-    throw new Error(`HTTP ${baked.status}`);
-  }
-  return (await baked.json()) as CjaRates;
-}
-
-export function GoldRateBar({
-  initialRates = null,
-}: {
-  initialRates?: CjaRates | null;
-}) {
-  const [rates, setRates] = useState<CjaRates | null>(initialRates);
-  const [failed, setFailed] = useState(!hasPrimaryRates(initialRates));
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      try {
-        const data = await fetchLiveRates();
-        if (!cancelled) {
-          setRates(data);
-          setFailed(!hasPrimaryRates(data));
-        }
-      } catch {
-        if (!cancelled && !hasPrimaryRates(initialRates)) {
-          setFailed(true);
-        }
-      }
-    }
-
-    void load();
-
-    const onFocus = () => {
-      void load();
-    };
-    const interval = window.setInterval(load, 30 * 60 * 1000);
-
-    window.addEventListener("focus", onFocus);
-    return () => {
-      cancelled = true;
-      window.clearInterval(interval);
-      window.removeEventListener("focus", onFocus);
-    };
-  }, [initialRates]);
+export function GoldRateBar() {
+  const { rates, failed } = useGoldRates();
 
   if (!rates && !failed) {
     return <FallbackBar message="Loading today's CJA gold rates…" />;

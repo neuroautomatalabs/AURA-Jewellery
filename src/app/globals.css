@@ -358,6 +358,41 @@ textarea.field-input {
   color: var(--gold-bright);
 }
 
+/* Admin dashboard — force readable menu text + mobile-friendly type scale */
+.admin-nav,
+.admin-nav a,
+.admin-nav button {
+  color: #ffffff !important;
+}
+
+.admin-shell h1.font-display {
+  font-size: 1.625rem;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.admin-shell .eyebrow + h1.font-display,
+.admin-shell p.eyebrow + h1.font-display {
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .admin-shell h1.font-display {
+    font-size: 1.875rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .admin-shell .field-input {
+    min-height: 2.75rem;
+    font-size: 16px; /* avoid iOS zoom on focus */
+  }
+
+  .admin-shell table {
+    font-size: 0.8125rem;
+  }
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;

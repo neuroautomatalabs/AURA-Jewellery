@@ -3,11 +3,11 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  formatPrice,
   getRelatedProducts,
   products as seedProducts,
 } from "@/data/products";
 import { ProductDetail } from "@/components/ProductDetail";
+import { ProductPrice } from "@/components/ProductPrice";
 import { getCatalogProducts, getSellableProduct } from "@/lib/catalog";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: Props) {
                       {item.name}
                     </h3>
                     <p className="mt-2 text-base font-bold text-royal">
-                      {formatPrice(item.price, item.currency)}
+                      <ProductPrice product={item} />
                     </p>
                   </div>
                 </Link>

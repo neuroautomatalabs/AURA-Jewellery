@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Product, ProductSpecRow, StudSize } from "@/lib/types";
 import {
-  formatPrice,
-  formatPricePlain,
   getDiamondDetailRows,
   getProductDetailRows,
   getProductImages,
   getProductSku,
 } from "@/data/products";
 import { ProductImage } from "@/components/ProductImage";
+import { ProductPrice, ProductPriceNote } from "@/components/ProductPrice";
 import { RETURN_POLICY, getProductSizes, productNeedsSize } from "@/lib/return-policy";
 import { useCart } from "@/components/CartProvider";
 
@@ -210,12 +209,9 @@ export function ProductDetail({
               Regular price
             </p>
             <p className="mt-1 text-3xl font-bold tracking-tight text-royal">
-              {formatPricePlain(product.price, product.currency)}
+              <ProductPrice product={product} plain />
             </p>
-            <p className="mt-1 text-sm text-ink-muted">
-              {formatPrice(product.price, product.currency)} · Taxes included.
-              Shipping calculated at checkout.
-            </p>
+            <ProductPriceNote product={product} />
           </div>
 
           {showSize && (

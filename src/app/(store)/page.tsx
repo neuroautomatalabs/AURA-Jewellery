@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { formatPrice } from "@/data/products";
 import { LiveBestsellers } from "@/components/LiveBestsellers";
 import { HeroSection } from "@/components/HeroSection";
+import { ClearPricingEntryPoints } from "@/components/ClearPricingEntryPoints";
 import { Reveal, Tilt3D } from "@/components/Motion";
 import { getBestsellerProducts } from "@/lib/catalog";
 
@@ -179,59 +179,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="site-gutter relative overflow-hidden bg-royal py-14 sm:py-16">
-        <div
-          className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-gold/15 blur-3xl"
-          aria-hidden
-        />
-        <div className="relative mx-auto max-w-[var(--site-max)]">
-          <Reveal>
-            <h2 className="text-center font-display text-3xl text-white sm:text-4xl">
-              Starts from
-            </h2>
-            <p className="mt-2 text-center text-sm text-white/65">
-              Clear pricing · three entry points
-            </p>
-          </Reveal>
-          <div className="mt-9 grid gap-4 sm:grid-cols-3 sm:gap-5">
-            {[
-              {
-                price: 2499,
-                label: "Everyday 18K",
-                desc: "Daily-wear gold studs",
-              },
-              {
-                price: 4499,
-                label: "Signature",
-                desc: "Elevated everyday pieces",
-              },
-              {
-                price: 6499,
-                label: "Heritage",
-                desc: "Richer traditional gold",
-              },
-            ].map((tier, i) => (
-              <Reveal key={tier.price} delay={i * 100}>
-                <Tilt3D maxTilt={8} className="rounded-2xl">
-                  <Link
-                    href="/shop"
-                    className="depth-card group flex flex-col items-center rounded-2xl border border-white/15 bg-white/5 px-5 py-9 text-center backdrop-blur-sm hover:border-gold/50 hover:bg-white/10"
-                  >
-                    <p className="eyebrow text-gold-bright">{tier.label}</p>
-                    <p className="font-display mt-4 text-3xl text-white sm:text-4xl">
-                      {formatPrice(tier.price)}
-                    </p>
-                    <p className="mt-2 text-sm text-white/60">{tier.desc}</p>
-                    <span className="mt-6 text-xs font-bold uppercase tracking-wider text-gold-bright transition group-hover:underline">
-                      Browse →
-                    </span>
-                  </Link>
-                </Tilt3D>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ClearPricingEntryPoints />
 
       <section className="site-gutter relative overflow-hidden border-t border-line bg-gold-soft py-16 sm:py-20">
         <div

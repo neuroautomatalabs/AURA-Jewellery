@@ -35,12 +35,20 @@ function without22k(value: string) {
 }
 
 export function normalizeCatalogProduct(item: CatalogProduct): CatalogProduct {
+  const weight =
+    typeof item.weight === "number" && item.weight > 0
+      ? item.weight
+      : typeof item.price === "number" && item.price > 0 && item.price < 100
+        ? item.price
+        : item.weight;
+
   return {
     ...item,
     name: without22k(item.name),
     description: without22k(item.description),
     metalDisplay: item.metalDisplay ? without22k(item.metalDisplay) : undefined,
     karat: item.metal === "gold" ? "18k" : undefined,
+    weight,
     bestseller: Boolean(item.bestseller),
     bestsellerRank:
       typeof item.bestsellerRank === "number" ? item.bestsellerRank : null,
@@ -53,6 +61,12 @@ export function toPublicProduct(product: CatalogProduct): Product {
     name: without22k(product.name),
     metal: product.metal,
     karat: product.metal === "gold" ? "18k" : undefined,
+    weight:
+      typeof product.weight === "number" && product.weight > 0
+        ? product.weight
+        : product.price > 0 && product.price < 100
+          ? product.price
+          : undefined,
     price: product.price,
     currency: product.currency,
     piercings: product.piercings,

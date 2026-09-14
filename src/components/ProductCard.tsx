@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { formatPrice } from "@/data/products";
 import { Tilt3D } from "@/components/Motion";
 import { ProductImage } from "@/components/ProductImage";
+import { ProductPrice } from "@/components/ProductPrice";
 
 export function ProductCard({ product }: { product: Product }) {
   const href = `/products/${product.id}`;
@@ -40,7 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
             </h3>
           </Link>
           <p className="mt-2 text-lg font-bold tracking-tight text-royal">
-            {formatPrice(product.price, product.currency)}
+            <ProductPrice product={product} />
           </p>
           <p className="mt-1 text-[11px] font-medium uppercase tracking-wider text-ink-muted">
             {product.unit === "pair" ? "Pair" : product.style}

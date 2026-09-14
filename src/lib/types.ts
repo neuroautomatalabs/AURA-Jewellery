@@ -48,6 +48,12 @@ export interface Product {
   name: string;
   metal: MetalType;
   karat?: GoldKarat;
+  /** Net gold weight in grams — used with live CJA rates for pricing. */
+  weight?: number;
+  /**
+   * Legacy / fallback INR amount when weight or rates are unavailable.
+   * Live catalogue prices are calculated from `weight` + CJA rates.
+   */
   price: number;
   currency: string;
   piercings: PiercingId[];

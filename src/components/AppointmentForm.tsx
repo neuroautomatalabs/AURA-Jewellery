@@ -146,7 +146,7 @@ export function AppointmentForm() {
             ))}
           </select>
           <span className="mt-1.5 block text-xs text-ink-muted">
-            11:00 AM – 8:00 PM · lunch 2:00–3:00 PM
+            1-hour slots · 11:00 AM – 8:00 PM · lunch 2:00–3:00 PM
           </span>
         </label>
 

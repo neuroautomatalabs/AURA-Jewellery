@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { clientSaveBestsellers } from "@/lib/admin-client";
 import { SimpleStatusBadge } from "@/app/admin/_components/StatusBadge";
 import { useAdminStore } from "@/app/admin/_components/useAdminStore";
-import { formatPrice } from "@/data/products";
+import { AdminLivePrice } from "@/app/admin/_components/AdminLivePrice";
 import { useState } from "react";
 
 export default function AdminBestsellersPage() {
@@ -128,8 +128,8 @@ export default function AdminBestsellersPage() {
                   <td className="px-4 py-3">
                     <SimpleStatusBadge status={product.published ? "live" : "draft"} />
                   </td>
-                  <td className="px-4 py-3 text-right font-semibold">
-                    {formatPrice(product.price, product.currency)}
+                  <td className="px-4 py-3 text-right">
+                    <AdminLivePrice product={product} />
                   </td>
                 </tr>
               ))}

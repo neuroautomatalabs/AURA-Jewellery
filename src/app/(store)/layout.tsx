@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { GoldRateBar } from "@/components/GoldRateBar";
+import { GoldRatesProvider } from "@/components/GoldRatesProvider";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { fetchCjaRates } from "@/lib/cja-rates";
@@ -20,13 +21,13 @@ export default async function StoreLayout({
   }
 
   return (
-    <>
+    <GoldRatesProvider initialRates={initialRates}>
       <Header>
-        <GoldRateBar initialRates={initialRates} />
+        <GoldRateBar />
       </Header>
       <main className="site-main">{children}</main>
       <Footer />
       <WhatsAppFloat />
-    </>
+    </GoldRatesProvider>
   );
 }

@@ -5,7 +5,8 @@ import { useMemo, useState } from "react";
 import { SimpleStatusBadge } from "@/app/admin/_components/StatusBadge";
 import { useAdminStore } from "@/app/admin/_components/useAdminStore";
 import { ProductImage } from "@/components/ProductImage";
-import { formatPrice, getCategoryLabel, productHasRegion } from "@/data/products";
+import { getCategoryLabel, productHasRegion } from "@/data/products";
+import { AdminLivePrice } from "@/app/admin/_components/AdminLivePrice";
 import type { PiercingRegion } from "@/lib/types";
 
 export default function AdminProductsPage() {
@@ -104,7 +105,7 @@ export default function AdminProductsPage() {
               <th className="px-4 py-3">Product</th>
               <th className="px-4 py-3">Metal</th>
               <th className="px-4 py-3">Category</th>
-              <th className="px-4 py-3">Price</th>
+              <th className="px-4 py-3">Live price</th>
               <th className="px-4 py-3">Stock</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3 text-right">Actions</th>
@@ -135,7 +136,9 @@ export default function AdminProductsPage() {
                 </td>
                 <td className="px-4 py-3 capitalize">{p.metal}</td>
                 <td className="px-4 py-3 text-ink-muted">{getCategoryLabel(p)}</td>
-                <td className="px-4 py-3 font-semibold">{formatPrice(p.price, p.currency)}</td>
+                <td className="px-4 py-3">
+                  <AdminLivePrice product={p} />
+                </td>
                 <td className="px-4 py-3 text-ink-muted">
                   {p.stock == null ? "Made to order" : p.stock}
                 </td>

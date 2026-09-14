@@ -5,7 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
+import { useGoldRates } from "@/components/GoldRatesProvider";
+import { ProductPrice } from "@/components/ProductPrice";
 import { formatPrice, getProduct, products as seedProducts } from "@/data/products";
+import {
+  DEFAULT_SHIPPING_INR,
+  resolveProductAmountInr,
+} from "@/lib/pricing";
 import { RETURN_POLICY } from "@/lib/return-policy";
 import { loadRazorpayScript } from "@/lib/razorpay-client";
 import type { Product, CartItem } from "@/lib/types";
@@ -15,6 +21,7 @@ type Line = { item: CartItem; product: Product };
 export function CartView() {
   const router = useRouter();
   const { items, updateQty, removeItem, clear, count } = useCart();
+  const { rates } = useGoldRates();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -48,10 +55,13 @@ export function CartView() {
     if (product) lines.push({ item, product });
   }
 
-  const subtotal = lines.reduce(
-    (sum, { item, product }) => sum + product.price * item.qty,
+  const merchandise = lines.reduce(
+    (sum, { item, product }) =>
+      sum + resolveProductAmountInr(product, rates) * item.qty,
     0,
   );
+  const shippingInr = merchandise > 0 ? Math.max(0, DEFAULT_SHIPPING_INR) : 0;
+  const subtotal = merchandise + shippingInr;
 
   async function startCheckout() {
     setError(null);
@@ -251,7 +261,7 @@ export function CartView() {
                 </p>
               )}
               <p className="mt-1 text-base font-bold text-royal">
-                {formatPrice(product.price, product.currency)}
+                <ProductPrice product={product} />
               </p>
               <div className="mt-auto flex flex-wrap items-center gap-3 pt-3">
                 <div className="inline-flex items-center rounded-full border border-line bg-surface">
@@ -293,11 +303,23 @@ export function CartView() {
       </ul>
 
       <div className="mt-8 rounded-2xl border border-line bg-white p-5 shadow-[var(--shadow-soft)] sm:p-7">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-ink-muted">Subtotal</span>
-          <span className="font-display text-2xl text-royal">
-            {formatPrice(subtotal)}
-          </span>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-ink-muted">Merchandise</span>
+            <span className="font-semibold text-royal">{formatPrice(merchandise)}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-ink-muted">Shipping</span>
+            <span className="font-semibold text-royal">
+              {shippingInr > 0 ? formatPrice(shippingInr) : "Included / free"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between border-t border-line pt-3">
+            <span className="text-sm text-ink-muted">Total</span>
+            <span className="font-display text-2xl text-royal">
+              {formatPrice(subtotal)}
+            </span>
+          </div>
         </div>
 
         <div className="mt-6 space-y-3 border-t border-line pt-6">

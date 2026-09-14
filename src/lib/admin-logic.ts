@@ -55,15 +55,15 @@ export function catalogProductFromForm(
 ): { error: string } | { product: CatalogProduct } {
   const existingId = text(form, "id");
   const name = text(form, "name");
-  const price = Number(text(form, "price"));
+  const weight = Number(text(form, "weight") || text(form, "price"));
   const metal = text(form, "metal") as MetalType;
   const style = text(form, "style") as Product["style"];
   const unit = text(form, "unit") as Product["unit"];
   const description = text(form, "description");
 
   if (!name) return { error: "Name is required." };
-  if (!Number.isFinite(price) || price < 1) {
-    return { error: "Enter a valid price in INR." };
+  if (!Number.isFinite(weight) || weight < 0.1) {
+    return { error: "Enter a valid weight in grams." };
   }
   if (metal !== "gold" && metal !== "diamond") {
     return { error: "Choose gold or diamond." };
@@ -89,7 +89,9 @@ export function catalogProductFromForm(
     name,
     metal,
     karat: metal === "gold" ? "18k" : undefined,
-    price,
+    weight,
+    // Keep a numeric stub for legacy readers; live shop pricing uses weight + CJA rates.
+    price: weight,
     currency: "INR",
     piercings,
     image: imageUrls[0],

@@ -1,5 +1,10 @@
 import type { CartItem } from "@/lib/types";
 import { getSellableProduct } from "@/lib/catalog";
+import { fetchCjaRates } from "@/lib/cja-rates";
+import {
+  DEFAULT_SHIPPING_INR,
+  resolveProductAmountInr,
+} from "@/lib/pricing";
 import { getProductSizes, productNeedsSize } from "@/lib/return-policy";
 
 export type CheckoutCustomer = {
@@ -29,6 +34,8 @@ export async function buildCheckoutLines(items: CartItem[]): Promise<{
   lines: CheckoutLine[];
   amountPaise: number;
   amountInr: number;
+  merchandiseInr: number;
+  shippingInr: number;
   error?: string;
 }> {
   if (!Array.isArray(items) || items.length === 0) {
@@ -36,8 +43,17 @@ export async function buildCheckoutLines(items: CartItem[]): Promise<{
       lines: [],
       amountPaise: 0,
       amountInr: 0,
+      merchandiseInr: 0,
+      shippingInr: 0,
       error: "Your cart is empty.",
     };
+  }
+
+  let rates = null;
+  try {
+    rates = await fetchCjaRates();
+  } catch {
+    rates = null;
   }
 
   const lines: CheckoutLine[] = [];
@@ -48,6 +64,8 @@ export async function buildCheckoutLines(items: CartItem[]): Promise<{
         lines: [],
         amountPaise: 0,
         amountInr: 0,
+        merchandiseInr: 0,
+        shippingInr: 0,
         error: "Invalid cart item.",
       };
     }
@@ -58,6 +76,8 @@ export async function buildCheckoutLines(items: CartItem[]): Promise<{
         lines: [],
         amountPaise: 0,
         amountInr: 0,
+        merchandiseInr: 0,
+        shippingInr: 0,
         error: "A product in your cart is no longer available.",
       };
     }
@@ -68,6 +88,8 @@ export async function buildCheckoutLines(items: CartItem[]): Promise<{
         lines: [],
         amountPaise: 0,
         amountInr: 0,
+        merchandiseInr: 0,
+        shippingInr: 0,
         error: `Please choose a size for ${product.name}.`,
       };
     }
@@ -76,25 +98,42 @@ export async function buildCheckoutLines(items: CartItem[]): Promise<{
         lines: [],
         amountPaise: 0,
         amountInr: 0,
+        merchandiseInr: 0,
+        shippingInr: 0,
         error: `Please choose a valid size for ${product.name}.`,
       };
     }
 
     const qty = Math.min(Math.floor(item.qty), 20);
-    const lineTotal = product.price * qty;
+    const unitPrice = resolveProductAmountInr(product, rates);
+    if (!unitPrice || unitPrice < 1) {
+      return {
+        lines: [],
+        amountPaise: 0,
+        amountInr: 0,
+        merchandiseInr: 0,
+        shippingInr: 0,
+        error: `Could not price ${product.name}. Please try again shortly.`,
+      };
+    }
+    const lineTotal = unitPrice * qty;
     lines.push({
       productId: product.id,
       name: product.name,
       size: item.size,
       qty,
-      unitPrice: product.price,
+      unitPrice,
       lineTotal,
     });
   }
 
-  const amountInr = lines.reduce((sum, l) => sum + l.lineTotal, 0);
+  const merchandiseInr = lines.reduce((sum, l) => sum + l.lineTotal, 0);
+  const shippingInr = merchandiseInr > 0 ? Math.max(0, DEFAULT_SHIPPING_INR) : 0;
+  const amountInr = merchandiseInr + shippingInr;
   return {
     lines,
+    merchandiseInr,
+    shippingInr,
     amountInr,
     amountPaise: amountInr * 100,
   };

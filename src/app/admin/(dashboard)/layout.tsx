@@ -9,10 +9,10 @@ export default function DashboardLayout({
 }) {
   return (
     <AdminGate>
-      <div className="min-h-dvh bg-surface">
+      <div className="admin-shell min-h-dvh bg-surface">
         <AdminSidebar />
-        <div className="lg:pl-64">
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        <div className="lg:pl-60">
+          <div className="mx-auto max-w-6xl px-3 py-4 sm:px-5 sm:py-6 lg:px-6 lg:py-8">
             <Suspense
               fallback={
                 <p className="text-sm text-ink-muted">Loading…</p>

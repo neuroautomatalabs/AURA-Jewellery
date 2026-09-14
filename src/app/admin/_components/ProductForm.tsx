@@ -11,7 +11,6 @@ import {
 } from "@/app/admin/_components/ProductPhotoPicker";
 import {
   DIAMOND_DEFAULTS,
-  formatPrice,
   getBackSide,
   getCertification,
   getMetalLabel,
@@ -34,7 +33,13 @@ export function ProductForm({ product }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [name, setName] = useState(product?.name ?? "");
-  const [price, setPrice] = useState(product?.price ? String(product.price) : "");
+  const [weight, setWeight] = useState(
+    product?.weight
+      ? String(product.weight)
+      : product?.price && product.price < 100
+        ? String(product.price)
+        : "",
+  );
   const [metal, setMetal] = useState<MetalType>(product?.metal ?? "gold");
   const [style, setStyle] = useState(product?.style ?? "stud");
   const [unit, setUnit] = useState(product?.unit ?? "single");
@@ -86,7 +91,7 @@ export function ProductForm({ product }: Props) {
   const nose = piercings.filter((p) => p.region === "nose");
   const selected = new Set(product?.piercings ?? []);
   const cover = photos[0]?.src;
-  const priceNumber = Number(price);
+  const weightNumber = Number(weight);
   const metalLabel = metal === "gold" ? "18K Gold" : "Diamond";
 
   function field(form: FormData, key: string) {
@@ -105,7 +110,8 @@ export function ProductForm({ product }: Props) {
       name: name.trim() || "Product name",
       metal,
       karat: metal === "gold" ? "18k" : undefined,
-      price: Number.isFinite(priceNumber) && priceNumber > 0 ? priceNumber : 0,
+      price: Number.isFinite(weightNumber) && weightNumber > 0 ? weightNumber : 0,
+      weight: Number.isFinite(weightNumber) && weightNumber > 0 ? weightNumber : undefined,
       currency: "INR",
       piercings: placementIds,
       image: photoSrcs[0] ?? "",
@@ -148,16 +154,24 @@ export function ProductForm({ product }: Props) {
               />
             </label>
             <label className="block">
-              <span className="field-label">Price (INR)</span>
-              <input
-                name="price"
-                type="number"
-                min={1}
-                required
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="field-input"
-              />
+              <span className="field-label">Weight</span>
+              <div className="field-input flex items-stretch !p-0 overflow-hidden">
+                <input
+                  name="weight"
+                  type="number"
+                  inputMode="decimal"
+                  min={0.1}
+                  step={0.1}
+                  required
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  className="min-h-12 w-full bg-transparent px-3.5 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  placeholder="e.g. 2.5"
+                />
+                <span className="flex shrink-0 items-center border-l border-line px-3.5 text-sm text-ink-muted">
+                  gm
+                </span>
+              </div>
             </label>
             <label className="block">
               <span className="field-label">Metal</span>
@@ -381,9 +395,12 @@ export function ProductForm({ product }: Props) {
                 {name.trim() || "Product name"}
               </h3>
               <p className="mt-2 text-lg font-bold tracking-tight text-royal">
-                {Number.isFinite(priceNumber) && priceNumber > 0
-                  ? formatPrice(priceNumber)
-                  : "₹ —"}
+                {Number.isFinite(weightNumber) && weightNumber > 0
+                  ? `${weightNumber} gm`
+                  : "— gm"}
+              </p>
+              <p className="mt-1 text-[11px] text-ink-muted">
+                Shop price uses live CJA rates + your formula
               </p>
               <p className="mt-1 text-[11px] font-medium uppercase tracking-wider text-ink-muted">
                 {unit === "pair" ? "Pair" : style}

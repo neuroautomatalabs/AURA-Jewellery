@@ -9,6 +9,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 4200,
+    weight: 0.55,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "helix", "forward-helix"],
     image:
@@ -23,6 +24,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 2499,
+    weight: 0.4,
     currency: "INR",
     piercings: [
       "lobe-lower",
@@ -46,6 +48,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 3100,
+    weight: 0.4,
     currency: "INR",
     piercings: [
       "tragus",
@@ -67,6 +70,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 6890,
+    weight: 0.85,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "conch", "nostril"],
     image:
@@ -81,6 +85,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 7420,
+    weight: 1.1,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "contraconch", "conch"],
     image:
@@ -95,6 +100,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 9200,
+    weight: 1.1,
     currency: "INR",
     piercings: ["lobe-lower", "low-helix"],
     image:
@@ -109,6 +115,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 3890,
+    weight: 0.55,
     currency: "INR",
     piercings: ["helix", "aura-helix", "low-helix", "forward-helix"],
     image:
@@ -123,6 +130,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 5120,
+    weight: 0.85,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "nostril"],
     image:
@@ -136,6 +144,7 @@ export const products: Product[] = [
     name: "Solitaire Diamond Spark Stud",
     metal: "diamond",
     price: 18500,
+    weight: 0.75,
     currency: "INR",
     piercings: [
       "lobe-lower",
@@ -171,6 +180,7 @@ export const products: Product[] = [
     name: "Diamond Cluster Trio Stud",
     metal: "diamond",
     price: 24800,
+    weight: 0.75,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "contraconch", "conch"],
     image:
@@ -198,6 +208,7 @@ export const products: Product[] = [
     name: "Invisible Set Diamond Stud",
     metal: "diamond",
     price: 32000,
+    weight: 1.15,
     currency: "INR",
     piercings: ["rook", "aura-rook", "hidden-rook", "daith", "tragus"],
     image:
@@ -211,6 +222,7 @@ export const products: Product[] = [
     name: "Floating Diamond Ear Stud",
     metal: "diamond",
     price: 27500,
+    weight: 1.15,
     currency: "INR",
     piercings: [
       "aura-helix",
@@ -230,6 +242,7 @@ export const products: Product[] = [
     name: "Marquise Diamond Tip Stud",
     metal: "diamond",
     price: 29800,
+    weight: 1.15,
     currency: "INR",
     piercings: ["helix", "aura-helix", "low-helix", "forward-helix"],
     image:
@@ -243,6 +256,7 @@ export const products: Product[] = [
     name: "Daith Diamond Gem Stud",
     metal: "diamond",
     price: 21000,
+    weight: 0.75,
     currency: "INR",
     piercings: ["daith", "rook", "antitragus"],
     image:
@@ -257,6 +271,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 5600,
+    weight: 0.85,
     currency: "INR",
     piercings: ["conch", "contraconch"],
     image:
@@ -271,6 +286,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 11200,
+    weight: 1.4,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe"],
     image:
@@ -284,6 +300,7 @@ export const products: Product[] = [
     name: "Mini Brilliance Diamond Stud",
     metal: "diamond",
     price: 16200,
+    weight: 0.75,
     currency: "INR",
     piercings: [
       "antitragus",
@@ -303,6 +320,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 3650,
+    weight: 0.55,
     currency: "INR",
     piercings: ["lobe-lower", "aura-lobe", "helix", "forward-helix", "nostril"],
     image:
@@ -317,6 +335,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 2890,
+    weight: 0.4,
     currency: "INR",
     piercings: ["nostril"],
     image:
@@ -331,6 +350,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 4580,
+    weight: 0.55,
     currency: "INR",
     piercings: ["nostril", "septum"],
     image:
@@ -344,6 +364,7 @@ export const products: Product[] = [
     name: "Solitaire Diamond Nose Pin",
     metal: "diamond",
     price: 14200,
+    weight: 0.75,
     currency: "INR",
     piercings: ["nostril"],
     image:
@@ -373,6 +394,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 5200,
+    weight: 0.85,
     currency: "INR",
     piercings: ["septum"],
     image:
@@ -387,6 +409,7 @@ export const products: Product[] = [
     metal: "gold",
     karat: "18k",
     price: 4100,
+    weight: 0.55,
     currency: "INR",
     piercings: ["septum"],
     image:
