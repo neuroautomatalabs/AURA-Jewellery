@@ -62,9 +62,12 @@ export function catalogProductFromForm(
   const description = text(form, "description");
 
   if (!name) return { error: "Name is required." };
-  if (!Number.isFinite(weight) || weight < 0.1) {
-    return { error: "Enter a valid weight in grams." };
+  if (!Number.isFinite(weight) || weight < 0.001) {
+    return { error: "Enter a valid weight in grams (min 0.001)." };
   }
+  // Preserve milligram precision for pieces under 1g (e.g. 0.850).
+  const weightRounded =
+    weight < 1 ? Math.round(weight * 1000) / 1000 : Math.round(weight * 100) / 100;
   if (metal !== "gold" && metal !== "diamond") {
     return { error: "Choose gold or diamond." };
   }
@@ -89,9 +92,9 @@ export function catalogProductFromForm(
     name,
     metal,
     karat: metal === "gold" ? "18k" : undefined,
-    weight,
+    weight: weightRounded,
     // Keep a numeric stub for legacy readers; live shop pricing uses weight + CJA rates.
-    price: weight,
+    price: weightRounded,
     currency: "INR",
     piercings,
     image: imageUrls[0],

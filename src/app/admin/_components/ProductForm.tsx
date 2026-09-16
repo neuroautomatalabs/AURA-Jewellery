@@ -160,18 +160,21 @@ export function ProductForm({ product }: Props) {
                   name="weight"
                   type="number"
                   inputMode="decimal"
-                  min={0.1}
-                  step={0.1}
+                  min={0.001}
+                  step={0.001}
                   required
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
                   className="min-h-12 w-full bg-transparent px-3.5 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  placeholder="e.g. 2.5"
+                  placeholder="e.g. 0.850"
                 />
                 <span className="flex shrink-0 items-center border-l border-line px-3.5 text-sm text-ink-muted">
                   gm
                 </span>
               </div>
+              <span className="mt-1.5 block text-xs text-ink-muted">
+                Below 1 gm, enter 3 decimals (e.g. 0.850)
+              </span>
             </label>
             <label className="block">
               <span className="field-label">Metal</span>
@@ -396,7 +399,7 @@ export function ProductForm({ product }: Props) {
               </h3>
               <p className="mt-2 text-lg font-bold tracking-tight text-royal">
                 {Number.isFinite(weightNumber) && weightNumber > 0
-                  ? `${weightNumber} gm`
+                  ? `${weightNumber < 1 ? weightNumber.toFixed(3) : String(weightNumber)} gm`
                   : "— gm"}
               </p>
               <p className="mt-1 text-[11px] text-ink-muted">

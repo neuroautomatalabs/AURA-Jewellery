@@ -37,7 +37,9 @@ export function AdminLivePrice({ product }: { product: ProductLike }) {
     <div>
       <p className="font-semibold">{formatPrice(amount, product.currency)}</p>
       {weight != null && (
-        <p className="text-xs text-ink-muted">{weight} gm · live rate</p>
+        <p className="text-xs text-ink-muted">
+          {weight < 1 ? weight.toFixed(3) : String(weight)} gm · live rate
+        </p>
       )}
     </div>
   );
